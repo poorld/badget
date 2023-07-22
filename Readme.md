@@ -27,12 +27,12 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
 ### 目录结构
 ```
 /data/local/tmp/badget#
-├─arm64-v8a
-│ └─libfrida_gadget.so
+├──arm64-v8a
+│  └─libfrida_gadget.so
 │──arm64-v7a
 │  └─libfrida_gadget.so
-│─com.network.xf100
-│ └─hook.js
+│──com.network.xf100
+│  └─hook.js
 ```
 
 ### 配置
