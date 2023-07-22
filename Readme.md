@@ -1,11 +1,17 @@
 ### 说明
-参考项目  [xcubebase](https://github.com/svengong/xcubebase)
-参考博客地址: [Frida持久化方案(Xcube)之方案二——基于xposed](https://bbs.kanxue.com/thread-266784.htm)
+本项目为frida gadget动态注入工具
 
-badget基于xposed和frida-gadget，实现frida-gadget注入
 gadget版本: 16.0.17
 
-初始化需要root!!!
+
+参考项目  [xcubebase](https://github.com/svengong/xcubebase)
+
+参考博客地址: [Frida持久化方案(Xcube)之方案二——基于xposed](https://bbs.kanxue.com/thread-266784.htm)
+
+badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_gadget.so库未重命名，请重命名过检测!
+
+
+点击hello badget进行初始化，初始化需要root!!!初始化做的工作是把assets目录下的so库复制到/data/local/tmp/badget
 
 ### 实现原理
 * 1.拷贝libfrida_gadget.so到/data/user/0/packageName/app_libs/目录下
@@ -19,8 +25,15 @@ gadget版本: 16.0.17
 * 3.把hook.js放在/data/local/tmp/badget/包名/ 目录下
 
 ### 目录结构
-
-
+```
+/data/local/tmp/badget#
+├─arm64-v8a
+│ └─libfrida_gadget.so
+│──arm64-v7a
+│  └─libfrida_gadget.so
+│─com.network.xf100
+│ └─hook.js
+```
 
 ### 配置
 
