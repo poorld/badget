@@ -11,8 +11,6 @@ gadget版本: 16.0.17
 badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_gadget.so库未重命名，请重命名过检测!
 
 
-点击hello badget进行初始化，初始化需要root!!!初始化做的工作是把assets目录下的so库复制到/data/local/tmp/badget
-
 ### 实现原理
 * 1.拷贝libfrida_gadget.so到/data/user/0/packageName/app_libs/目录下
 * 2.在/data/user/0/packageName/app_libs/目录下生成libfrida_gadget.config.so
@@ -20,7 +18,7 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
 * 4.调用loadLibrary0加载libfrida_gadget.so库
 
 ### 使用步骤
-* 1.点击hello_badget初始化(需要root)
+* 1.点击hello_badget初始化(需要root)。初始化做的工作是把assets目录下的so库复制到/data/local/tmp/badget
 * 2.在/data/local/tmp/badget/目录下新建文件夹,名称为应用包名
 * 3.把hook.js放在/data/local/tmp/badget/包名/ 目录下
 
