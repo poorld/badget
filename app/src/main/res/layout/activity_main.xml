@@ -1,19 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/hello_badget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hello badget"
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
+                style="?collapsingToolbarLayoutLargeStyle"
+                android:layout_width="match_parent"
+                android:layout_height="?collapsingToolbarLayoutLargeSize"
+                android:fitsSystemWindows="false"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleCollapseMode="scale">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    android:elevation="0dp"
+                    app:layout_collapseMode="pin"
+                    app:title="Badget"/>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:scrollbars="none"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/status_card"
+                    style="@style/AppTheme.ElevatedCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:outlineAmbientShadowColor="?colorPrimary"
+                    android:outlineSpotShadowColor="?colorPrimary"
+                    app:cardBackgroundColor="?colorPrimary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/item_padding_horizontal"
+                        android:paddingVertical="@dimen/item_padding_vertical">
+
+                        <ImageView
+                            android:id="@+id/module_status_icon"
+                            style="@style/AppTheme.SideImage"
+                            tools:ignore="ContentDescription"
+                            android:src="@drawable/outline_done_all_24" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingVertical="13dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/module_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnPrimary"
+                                android:text="@string/home_xposed_activated" />
+
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/filter_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                android:textColor="?colorOnPrimary"
+                                android:text="@string/home_xposed_filter_count" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/init_card"
+                    style="@style/AppTheme.ElevatedCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:outlineAmbientShadowColor="?colorPrimaryContainer"
+                    android:outlineSpotShadowColor="?colorPrimaryContainer"
+                    app:cardBackgroundColor="?colorPrimaryContainer">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="@dimen/item_padding_horizontal"
+                        android:paddingVertical="@dimen/item_padding_vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <ImageView
+                                style="@style/AppTheme.SideImage"
+                                tools:ignore="ContentDescription"
+                                android:src="@drawable/baseline_build_circle_24" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceTitleMedium"
+                                android:textColor="?colorOnSecondaryContainer"
+                                android:text="初始化工作?" />
+                        </LinearLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textAppearance="?textAppearanceBodySmall"
+                            android:textColor="?colorOnSecondaryContainer"
+                            android:text="应用未初始化!!!\nhook应用需要依赖gadget库,请点击初始化释放gadget库,执行此操作需要root权限!!!" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_init"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_gravity="end"
+                            android:insetTop="5dp"
+                            android:insetBottom="5dp"
+                            android:text="初始化" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+
+
+        </androidx.core.widget.NestedScrollView>
+
+
+        <!--<TextView
+            android:id="@+id/hello_badget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hello badget"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_select_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="25dp"
+            android:src="@drawable/round_tag_faces_24"
+            android:contentDescription="TODO"
+            app:fabSize="mini" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

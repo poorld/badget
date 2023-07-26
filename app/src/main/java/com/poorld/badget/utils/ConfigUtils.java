@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 
 public class ConfigUtils {
 
@@ -21,6 +22,9 @@ public class ConfigUtils {
     private static final String BADGET_DATA_PATH = "/data/local/tmp/badget/";
 
     public static final String HOOK_JS = "hook.js";
+
+    public static final String ABI_V8A = "arm64-v8a";
+    public static final String ABI_V7A = "armeabi-v7a";
 
     // /data/local/tmp/badget/
     public static String getBadgetDataPath() {
@@ -59,6 +63,29 @@ public class ConfigUtils {
         Log.d(TAG, "gadgetConfigJson: " + gadgetConfigJson);
         return saveFile(gadgetConfigJson, getAppGadgetConfigPath(context).getPath());
     }
+
+
+    public static boolean checkBadgetSoExists() {
+        File badgetDir = new File(getBadgetDataPath());
+        Log.d(TAG, "file: " + Arrays.toString(badgetDir.list()));
+
+        if (!badgetDir.exists()) {
+            return false;
+        }
+
+        File abiv8Dir = new File(badgetDir, ABI_V8A);
+        if (!new File(abiv8Dir, FRIDA_GADGET_LIB).exists()) {
+            return false;
+        }
+
+        File abiv7Dir = new File(badgetDir, ABI_V7A);
+        if (!new File(abiv7Dir, FRIDA_GADGET_LIB).exists()) {
+            return false;
+        }
+
+        return true;
+    }
+
 
 
 

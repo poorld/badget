@@ -23,14 +23,16 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
 * 3.把hook.js放在/data/local/tmp/badget/包名/ 目录下
 
 ### 目录结构
-```
-/data/local/tmp/badget#
-├──arm64-v8a
-│  └─libfrida_gadget.so
-│──arm64-v7a
-│  └─libfrida_gadget.so
-│──com.network.xf100
-│  └─hook.js
+```tree
+
+├── /data/local/tmp/#tree
+├── badget
+│   ├── arm64-v8a
+│   │   └── libfrida_gadget.so
+│   ├── arm64-v7a
+│   │   └── libfrida_gadget.so
+│   └── com.network.xf100
+│       └── hook.js
 ```
 
 ### 配置

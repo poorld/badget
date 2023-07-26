@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">badget</string>
+
+    <string name="home_xposed_activated">Module Activated [%s]</string>
+    <string name="home_xposed_not_activated">Module Not Activated</string>
+    <string name="home_xposed_service_on">System service running [%d]</string>
+    <string name="home_xposed_filter_count">Hide My Applist has filtered total %d requests</string>
+
+    <!-- App select -->
+    <string name="search">Search</string>
+    <string name="list_show_system">Show system apps</string>
+    <string name="list_sorting">Sorting</string>
+    <string name="list_reverse_order">Reverse order</string>
+    <string name="list_sort_by_label">By app name</string>
+    <string name="list_sort_by_package_name">By package name</string>
+    <string name="list_sort_by_install_time">By install time</string>
+    <string name="list_sort_by_update_time">By update time</string>
+    <string name="enabled">启用</string>
+
 </resources>

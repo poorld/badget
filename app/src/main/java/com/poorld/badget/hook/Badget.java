@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.poorld.badget.MainActivity;
 import com.poorld.badget.utils.ConfigUtils;
 import com.poorld.badget.utils.LoadLibraryUtil;
 
@@ -11,6 +12,8 @@ import java.io.File;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -27,15 +30,27 @@ public class Badget implements IXposedHookLoadPackage {
     // 动态生成
     // /data/user/0/com.aaa.bbb/app_libs/libfrida_gadget.config.so
 
-    public static final String TAG = "Badget";
+    public static final String TAG = "Xposed#Badget";
 
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         Log.d(TAG, "handleLoadPackage: " + loadPackageParam.packageName);
-        //if ("poorld.xp.badget".equals(loadPackageParam.packageName)) {
-        //    return;
-        //}
+
+        if ("com.poorld.badget".equals(loadPackageParam.packageName)) {
+
+            Class<?> appClazz = loadPackageParam.classLoader.loadClass("com.poorld.badget.app.MyApp");
+            Log.d(TAG, "appClazz->" + appClazz);
+            XposedHelpers.setStaticBooleanField(appClazz, "isModuleActive", true);
+            //XposedHelpers.findAndHookMethod("com.poorld.badget.MainActivity", loadPackageParam.classLoader, "isModuleActivated", new XC_MethodReplacement() {
+            //    @Override
+            //    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+            //        return true;
+            //    }
+            //});
+
+            return;
+        }
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
