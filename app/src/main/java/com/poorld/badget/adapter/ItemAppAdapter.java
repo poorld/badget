@@ -1,6 +1,7 @@
 package com.poorld.badget.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textview.MaterialTextView;
 import com.poorld.badget.R;
+import com.poorld.badget.activity.AppSettingsAct;
 import com.poorld.badget.entity.ItemAppEntity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ItemAppAdapter extends RecyclerView.Adapter<ItemAppAdapter.ViewHolder> {
@@ -24,15 +27,30 @@ public class ItemAppAdapter extends RecyclerView.Adapter<ItemAppAdapter.ViewHold
     private List<ItemAppEntity> mList;
 
     public ItemAppAdapter(Context mContext) {
-        Log.d("TAG", "ItemAppAdapter: ");
         this.mContext = mContext;
         mList = new ArrayList<>();
     }
 
     public void setList(List<ItemAppEntity> list) {
-        Log.d("TAG", "setList: " + list);
         mList.clear();
+
+        if (list == null) {
+            notifyDataSetChanged();
+            return;
+        }
         mList.addAll(list);
+        mList.sort((entity1, entity2) -> {
+            if (entity1.isHookEnabled() && !entity2.isHookEnabled()) {
+                return -1;
+            }
+            if (entity1.isHookEnabled() && entity2.isHookEnabled()) {
+                return 0;
+            }
+            if (!entity1.isHookEnabled() && entity2.isHookEnabled()) {
+                return 0;
+            }
+            return -1;
+        });
         notifyDataSetChanged();
     }
 
@@ -45,11 +63,23 @@ public class ItemAppAdapter extends RecyclerView.Adapter<ItemAppAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d("TAG", "onBindViewHolder: " + position);
         ItemAppEntity appEntity = mList.get(position);
         holder.label.setText(appEntity.getAppName());
         holder.packageName.setText(appEntity.getPackageName());
         holder.icon.setImageDrawable(appEntity.getDrawable());
+        if (appEntity.isHookEnabled()) {
+            holder.enabled.setVisibility(View.VISIBLE);
+        } else {
+            holder.enabled.setVisibility(View.GONE);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //mContext.startActivity(new Intent(mContext, AppSettingsAct.class));
+                AppSettingsAct.startAct(mContext, appEntity.getPackageName());
+            }
+        });
     }
 
     @Override

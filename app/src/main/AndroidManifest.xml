@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,11 +19,12 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.poorld.badget.activity.SelectAppAct" />
-        <!-- 1、标识自己是否为一个Xposed模块 -->
+        <activity android:name=".activity.SelectAppAct" />
+        <activity android:name="com.poorld.badget.activity.AppSettingsAct" /> <!-- 1、标识自己是否为一个Xposed模块 -->
         <meta-data
             android:name="xposedmodule"
             android:value="true" /> <!-- 2、Xposed模块的描述信息 -->

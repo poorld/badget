@@ -1,6 +1,7 @@
 package com.poorld.badget.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -30,6 +32,11 @@ public class SelectAppAct extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private ItemAppAdapter mAppAdapter;
+
+    private boolean mShowSystemApp = false;
+
+    private String mSearch;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +45,6 @@ public class SelectAppAct extends AppCompatActivity {
         initView();
 
         initData();
-
 
     }
 
@@ -55,7 +61,7 @@ public class SelectAppAct extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 Log.d("TAG", "onRefresh: ");
-                initData();
+                refreshData();
             }
         });
         mSwipeRefreshLayout.measure(0,0);
@@ -72,9 +78,19 @@ public class SelectAppAct extends AppCompatActivity {
         mRecyclerView.setAdapter(mAppAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<ItemAppEntity> userApps = PkgManager.getUserApp(this);
-        Log.d("TAG", "userApps: " + userApps);
-        mAppAdapter.setList(userApps);
+        refreshData();
+    }
+
+    private void refreshData() {
+        Log.d("TAG", "mShowSystemApp: " + mShowSystemApp);
+
+        List<ItemAppEntity> apps = mShowSystemApp ? PkgManager.getSystemAndUserApp(this) : PkgManager.getUserApp(this);
+
+        if (!TextUtils.isEmpty(mSearch)) {
+            apps = PkgManager.filterApp(apps, mSearch);
+        }
+        Log.d("TAG", "userAppsSize=" + apps.size());
+        mAppAdapter.setList(apps);
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
@@ -85,12 +101,16 @@ public class SelectAppAct extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_show_system) {
-            boolean checked = item.isChecked();
-            item.setChecked(!checked);
-        } else if (item.getItemId() == R.id.menu_show_system) {
 
-        } /*else if (item.getItemId() == R.id.menu_sort_by_label) {
+        if (item.getItemId() == R.id.menu_show_system) {
+            mShowSystemApp = !item.isChecked();
+            item.setChecked(mShowSystemApp);
+
+            mSwipeRefreshLayout.setRefreshing(true);
+            initData();
+        } /*else if (item.getItemId() == R.id.menu_show_system) {
+
+        } else if (item.getItemId() == R.id.menu_sort_by_label) {
 
         } else if (item.getItemId() == R.id.menu_sort_by_package_name) {
 
@@ -107,6 +127,21 @@ public class SelectAppAct extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_app_list, menu);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                mSearch = s;
+                refreshData();
+                return true;
+            }
+        });
         return true;
     }
 

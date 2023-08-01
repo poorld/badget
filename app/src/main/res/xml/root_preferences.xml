@@ -1,34 +1,27 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="应用">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="pref_app"
+            app:icon="@drawable/round_tag_faces_24"
+            app:title="Badget"
+            app:summary="com.poorld.badget"/>
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <!--<SwitchPreferenceCompat
+            app:key="pref_switch_enable"
+            app:title="注入frida-gadget"
+            app:icon="@drawable/baseline_bug_report_30"/>-->
 
-    </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
 
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+        <SwitchPreference
+            android:icon="@drawable/baseline_bug_report_30"
+            android:key="pref_switch_enable"
+            android:summaryOff=""
+            android:summaryOn=""
+            android:title="注入frida-gadget" />
 
     </PreferenceCategory>
 
