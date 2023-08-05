@@ -97,7 +97,7 @@
                                 android:layout_marginTop="8dp"
                                 android:textAppearance="?textAppearanceBodySmall"
                                 android:textColor="?colorOnPrimary"
-                                android:text="@string/home_xposed_filter_count" />
+                                android:text="frida-gadget版本[16.0.17]" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>

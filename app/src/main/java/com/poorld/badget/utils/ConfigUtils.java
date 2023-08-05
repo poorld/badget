@@ -1,21 +1,28 @@
 package com.poorld.badget.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.poorld.badget.entity.ConfigEntity;
+import com.poorld.badget.entity.InteractionType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigUtils {
 
     private static final String TAG = "Badget#ConfigUtils";
 
+    public static final String DBAGET_PKG_NAME = "com.poorld.badget";
     public static final String FRIDA_GADGET_LIB = "libfrida_gadget.so";
     public static final String FRIDA_GADGET_CONFIG_LIB = "libfrida_gadget.config.so";
 
@@ -26,9 +33,19 @@ public class ConfigUtils {
     public static final String ABI_V8A = "arm64-v8a";
     public static final String ABI_V7A = "armeabi-v7a";
 
+    //public static Map<String, ConfigEntity.java> configCache = new HashMap<>();
+    public static ConfigEntity mConfigCache;
+
+    private static Gson gson = new Gson();
+    public static final String FILE_NAME_BADGET_CONFIG = "badget.json";
+
     // /data/local/tmp/badget/
     public static String getBadgetDataPath() {
         return BADGET_DATA_PATH;
+    }
+
+    public static String getBadgetConfigPath() {
+        return new File(getBadgetDataPath(), FILE_NAME_BADGET_CONFIG).getPath();
     }
 
     // /data/local/tmp/badget/packageName/hook.js
@@ -57,11 +74,28 @@ public class ConfigUtils {
     }
 
     // save to /data/user/0/packageName/app_libs/libfrida_gadget.config.so
-    public static boolean saveAppGadgetConfig(Context context) {
-        Log.d(TAG, "saveAppGadgetConfig: ");
-        String gadgetConfigJson = getGadgetConfigJson(context.getPackageName());
+    public static boolean saveAppGadgetConfig(Context context, ConfigEntity.PkgConfig pkgConfig) {
+        Log.d(TAG, "saveAppGadgetConfig: pkgConfig=" + pkgConfig);
+        String gadgetConfigJson = null;
+        switch (pkgConfig.getType()) {
+            case Listen:
+                // 待完善
+                //getJSConfigForListen();
+                break;
+            case Connect:
+                // 待完善
+                //getJSConfigForConnect();
+                break;
+            case Script:
+                gadgetConfigJson = getJSConfigForScript(context.getPackageName());
+                break;
+            case ScriptDirectory:
+                // 待完善
+                //getJSConfigForScriptDirectory();
+                break;
+        }
         Log.d(TAG, "gadgetConfigJson: " + gadgetConfigJson);
-        return saveFile(gadgetConfigJson, getAppGadgetConfigPath(context).getPath());
+        return CommonUtils.saveFile(gadgetConfigJson, getAppGadgetConfigPath(context).getPath());
     }
 
 
@@ -90,6 +124,7 @@ public class ConfigUtils {
 
 
     /**
+     * see {@link com.poorld.badget.entity.InteractionType#Script}
      * {
      *   "interaction": {
      *     "type": "script",
@@ -98,7 +133,7 @@ public class ConfigUtils {
      *   }
      * }
      */
-    public static String getGadgetConfigJson(String packageName) {
+    public static String getJSConfigForScript(String packageName) {
         JSONObject wrap = new JSONObject();
         JSONObject interaction = new JSONObject();
         try {
@@ -114,92 +149,159 @@ public class ConfigUtils {
         return json.replaceAll("\\\\", "");
     }
 
-
-    private static boolean saveFile(String config, String toFile) {
-        Log.d(TAG, "saveConfig to " + toFile);
+    /**
+     * see {@link com.poorld.badget.entity.InteractionType#Listen}
+     * {
+     *   "interaction": {
+     *     "type": "listen",
+     *     "address": "127.0.0.1",
+     *     "port": 27042,
+     *     "on_port_conflict": "fail",
+     *     "on_load": "wait"
+     *   }
+     * }
+     */
+    public static String getJSConfigForListen(String address, int port, boolean wait) {
+        JSONObject wrap = new JSONObject();
+        JSONObject interaction = new JSONObject();
         try {
-
-            FileOutputStream fileOutput = new FileOutputStream(toFile);
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            byteOut.write(config.getBytes());
-            // 从内存到写入到具体文件
-            fileOutput.write(byteOut.toByteArray());
-            // 关闭文件流
-            byteOut.close();
-            fileOutput.close();
-            return true;
-        } catch (Exception ex) {
-            return false;
+            interaction.put("type", "listen");
+            interaction.put("address", address);
+            interaction.put("port", port);
+            interaction.put("on_port_conflict", "fail");
+            interaction.put("on_load", wait ? "wait" : "resume");
+            wrap.putOpt("interaction", interaction);
+            Log.d(TAG, "getGadgetConfigJson: " + wrap);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        String json = wrap.toString();
+        return json.replaceAll("\\\\", "");
+    }
+
+    /**
+     * see {@link com.poorld.badget.entity.InteractionType#Connect}
+     * {
+     *   "interaction": {
+     *     "type": "connect",
+     *     "address": "127.0.0.1",
+     *     "port": 27052
+     *   }
+     * }
+     */
+    public static String getJSConfigForConnect(String address, int port) {
+        JSONObject wrap = new JSONObject();
+        JSONObject interaction = new JSONObject();
+        try {
+            interaction.put("type", "connect");
+            interaction.put("address", address);
+            interaction.put("port", port);
+            wrap.putOpt("interaction", interaction);
+            Log.d(TAG, "getGadgetConfigJson: " + wrap);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String json = wrap.toString();
+        return json.replaceAll("\\\\", "");
+    }
+
+    /**
+     * see {@link com.poorld.badget.entity.InteractionType#ScriptDirectory}
+     * {
+     *   "interaction": {
+     *     "type": "script-directory",
+     *     "path": "/data/local/tmp/badget/packageName/"
+     *   }
+     * }
+     */
+    public static String getJSConfigForScriptDirectory(String packageName) {
+        JSONObject wrap = new JSONObject();
+        JSONObject interaction = new JSONObject();
+        try {
+            interaction.put("type", "script-directory");
+            interaction.put("path", getBadgetJSPath(packageName).getParent());
+            wrap.putOpt("interaction", interaction);
+            Log.d(TAG, "getGadgetConfigJson: " + wrap);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String json = wrap.toString();
+        return json.replaceAll("\\\\", "");
     }
 
 
-    /**
-     * @param fromFiles 指定的下载目录
-     * @param toFile    应用的包路径
-     * @return int
-     */
-    public static int copyFile(String fromFiles, String toFile) {
-        //要复制的文件目录
-        File[] currentFiles;
-        File root = new File(fromFiles);
-        //如同判断SD卡是否存在或者文件是否存在,如果不存在则 return出去
-        if (!root.exists()) {
-            return -1;
+
+    public static void initConfig() {
+
+        Log.d(TAG, "initConfig: ");
+        Log.d(TAG, "mConfigCache: "+mConfigCache);
+
+        if (mConfigCache != null) {
+            Log.d(TAG, "config has init.");
+            return;
         }
-        //如果存在则获取当前目录下的全部文件 填充数组
-        currentFiles = root.listFiles();
-        if (currentFiles == null) {
-            Log.d("soFile---", "未获取到文件");
-            return -1;
-        }
-        //目标目录
-        File targetDir = new File(toFile);
-        //创建目录
-        if (!targetDir.exists()) {
-            targetDir.mkdirs();
-        }
-        //遍历要复制该目录下的全部文件
-        for (int i = 0; i < currentFiles.length; i++) {
-            if (currentFiles[i].isDirectory()) {
-                //如果当前项为子目录 进行递归
-                copyFile(currentFiles[i].getPath() + "/", toFile + currentFiles[i].getName() + "/");
+
+        File pkgConfigFile = new File(getBadgetConfigPath());
+        if (!pkgConfigFile.exists()) {
+            //try {
+            //    Log.d(TAG, "first init.");
+            //    pkgConfigFile.createNewFile();
+            //} catch (IOException e) {
+            //    Log.d(TAG, "initConfig IOException " + e.getMessage());
+            //}
+
+            List<String> cmds = new ArrayList<>();
+            cmds.add("touch " + getBadgetConfigPath());
+            cmds.add("chmod 777 " + getBadgetConfigPath());
+            ShellUtils.CommandResult result = ShellUtils.execCommand(cmds, true, true);
+            if (result.result == 0) {
+                Log.d(TAG, "create file success!");
             } else {
-                //如果当前项为文件则进行文件拷贝
-                int id = doCopy(currentFiles[i].getPath(), toFile + File.separator + currentFiles[i].getName());
+                throw new RuntimeException();
+            }
+            mConfigCache = new ConfigEntity();
+            mConfigCache.setEnabled(true);
+            updatePkgConfig();
+            return;
+        }
 
+
+        String conf = CommonUtils.readFile(pkgConfigFile);
+        if (!TextUtils.isEmpty(conf)) {
+            try {
+                mConfigCache = gson.fromJson(conf, ConfigEntity.class);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
             }
         }
-        return 0;
+        if (mConfigCache == null) {
+            mConfigCache = new ConfigEntity();
+            mConfigCache.setEnabled(true);
+            updatePkgConfig();
+        }
+        Log.d(TAG, "mConfigCache: " + mConfigCache);
     }
 
-    /**
-     * 要复制的目录下的所有非子目录(文件夹)文件拷贝
-     *
-     * @param fromFiles 指定的下载目录
-     * @param toFile    应用的包路径
-     * @return int
-     */
-    private static int doCopy(String fromFiles, String toFile) {
-        Log.d(TAG, "复制文件到" + toFile);
-        try {
-            FileInputStream fileInput = new FileInputStream(fromFiles);
-            FileOutputStream fileOutput = new FileOutputStream(toFile);
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024 * 1];
-            int len = -1;
-            while ((len = fileInput.read(buffer)) != -1) {
-                byteOut.write(buffer, 0, len);
-            }
-            // 从内存到写入到具体文件
-            fileOutput.write(byteOut.toByteArray());
-            // 关闭文件流
-            byteOut.close();
-            fileOutput.close();
-            fileInput.close();
-            return 0;
-        } catch (Exception ex) {
-            return -1;
-        }
+    public static void updatePkgConfig() {
+        CommonUtils.saveFile(gson.toJson(mConfigCache), getBadgetConfigPath());
     }
+
+    public static ConfigEntity.PkgConfig getPkgConfig(String packageName) {
+        Map<String, ConfigEntity.PkgConfig> configMap = mConfigCache.getPkgConfigs();
+        ConfigEntity.PkgConfig pkgConfig = configMap.get(packageName);
+        if (pkgConfig == null) {
+            pkgConfig = new ConfigEntity.PkgConfig();
+            pkgConfig.setPkgName(packageName);
+            pkgConfig.setType(InteractionType.Script);
+            mConfigCache.addPkgConfigs(packageName, pkgConfig);
+        }
+        return pkgConfig;
+    }
+
+    public static Map<String, ConfigEntity.PkgConfig> getPkgConfigs() {
+        return mConfigCache.getPkgConfigs();
+    }
+
+
+
 }

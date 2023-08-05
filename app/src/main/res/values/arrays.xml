@@ -6,12 +6,16 @@
     </string-array>
     <!-- Reply Preference -->
     <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+        <item>Listen</item>
+        <item>Connect</item>
+        <item>Script</item>
+        <item>ScriptDirectory</item>
     </string-array>
 
     <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+        <item>Listen</item>
+        <item>Connect</item>
+        <item>Script</item>
+        <item>ScriptDirectory</item>
     </string-array>
 </resources>

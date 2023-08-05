@@ -1,14 +1,19 @@
 package com.poorld.badget.hook;
 
+import static com.poorld.badget.utils.ConfigUtils.DBAGET_PKG_NAME;
+
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
 import com.poorld.badget.MainActivity;
+import com.poorld.badget.entity.ConfigEntity;
+import com.poorld.badget.utils.CommonUtils;
 import com.poorld.badget.utils.ConfigUtils;
 import com.poorld.badget.utils.LoadLibraryUtil;
 
 import java.io.File;
+import java.util.Map;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -22,35 +27,49 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public class Badget implements IXposedHookLoadPackage {
 
-    // /data/local/tmp/badget/arm64-v8a/libfrida_gadget.so
-    // /data/local/tmp/badget/armeabi-v7a/libfrida_gadget.so
-    // /data/local/tmp/badget/com.aaa.bbb/hook.js
+    public static final String TAG = "Badget#";
 
-    // /data/user/0/com.aaa.bbb/app_libs/libfrida_gadget.so
-    // 动态生成
-    // /data/user/0/com.aaa.bbb/app_libs/libfrida_gadget.config.so
-
-    public static final String TAG = "Xposed#Badget";
-
+    private ConfigEntity mConfig;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         Log.d(TAG, "handleLoadPackage: " + loadPackageParam.packageName);
 
-        if ("com.poorld.badget".equals(loadPackageParam.packageName)) {
+        if (DBAGET_PKG_NAME.equals(loadPackageParam.packageName)) {
 
             Class<?> appClazz = loadPackageParam.classLoader.loadClass("com.poorld.badget.app.MyApp");
-            Log.d(TAG, "appClazz->" + appClazz);
             XposedHelpers.setStaticBooleanField(appClazz, "isModuleActive", true);
-            //XposedHelpers.findAndHookMethod("com.poorld.badget.MainActivity", loadPackageParam.classLoader, "isModuleActivated", new XC_MethodReplacement() {
-            //    @Override
-            //    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-            //        return true;
-            //    }
-            //});
 
             return;
         }
+
+        if (mConfig == null) {
+            if (ConfigUtils.mConfigCache == null) {
+                ConfigUtils.initConfig();
+            }
+            mConfig = ConfigUtils.mConfigCache;
+        }
+
+        Log.d(TAG, "mConfig: " + mConfig);
+
+        if (mConfig == null) {
+            return;
+        }
+        if (!mConfig.isEnabled()) {
+            return;
+        }
+
+        Map<String, ConfigEntity.PkgConfig> pkgConfigs = mConfig.getPkgConfigs();
+        ConfigEntity.PkgConfig pkgConfig = pkgConfigs.get(loadPackageParam.packageName);
+
+        if (pkgConfig == null) {
+            return;
+        }
+        if (!pkgConfig.isEnabled()) {
+            Log.d(TAG, loadPackageParam.packageName + " is not enabled!!!");
+            return;
+        }
+
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -61,19 +80,11 @@ public class Badget implements IXposedHookLoadPackage {
                     // /data/user/0/packageName/app_libs/
                     String applib = ConfigUtils.getAppPrivLibDir(base);
                     String ABI = android.os.Process.is64Bit() ? "arm64-v8a" : "armeabi-v7a";
-
-                    Log.d(TAG, "attach beforeHookedMethod toPath:" + applib);
-
-                    // /data/user/0/packageName/app_libs/libfrida_gadget.so
                     File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(base);
                     Log.d(TAG, "appGadgetLibPath: " + appGadgetLibPath);
-
                     if (!appGadgetLibPath.exists()) {
-                        // 复制so到/data/user/0/packageName/app_libs/
-                        ConfigUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applib);
-                        // 在 /data/user/0/packageName/app_libs/目录下生成libfrida_gadget.config.so
-                        // "path": "/data/local/tmp/packageName/hook.js",
-                        ConfigUtils.saveAppGadgetConfig(base);
+                        CommonUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applib);
+                        ConfigUtils.saveAppGadgetConfig(base, pkgConfig);
                     }
 
                 } catch (Throwable throwable) {
@@ -84,18 +95,17 @@ public class Badget implements IXposedHookLoadPackage {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Log.d(TAG, "afterHookedMethod: ");
-                //System.loadLibrary("frida_gadget");
-                //loadTargetLibrary(this.getClass().getClassLoader());
 
                 Context context = (Context) param.args[0];
+
                 File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(context);
                 // libfrida_gadget库不存在
                 if (!appGadgetLibPath.exists()) {
                     return;
                 }
 
-                File hookJsFile = ConfigUtils.getBadgetJSPath(context.getPackageName());
-                // 脚本不存在
+                //File hookJsFile = ConfigUtils.getBadgetJSPath(context.getPackageName());
+                File hookJsFile = new File(pkgConfig.getJsPath());
                 if (!hookJsFile.exists()) {
                     return;
                 }

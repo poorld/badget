@@ -65,11 +65,11 @@ public class PkgManager {
             boolean isSystemApp = (resolveInfo.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
 
             // test
-            if ("com.tencent.mm".equals(packageName)) {
-                ItemAppEntity itemAppEntity = new ItemAppEntity(packageName, appName, drawable, isSystemApp);
-                itemAppEntity.setHookEnabled(true);
-                return itemAppEntity;
-            }
+            //if ("com.tencent.mm".equals(packageName)) {
+            //    ItemAppEntity itemAppEntity = new ItemAppEntity(packageName, appName, drawable, isSystemApp);
+            //    itemAppEntity.setHookEnabled(true);
+            //    return itemAppEntity;
+            //}
             return new ItemAppEntity(packageName, appName, drawable, isSystemApp);
         }).collect(Collectors.toList());
     }

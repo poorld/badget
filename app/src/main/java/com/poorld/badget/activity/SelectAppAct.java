@@ -17,10 +17,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.poorld.badget.R;
 import com.poorld.badget.adapter.ItemAppAdapter;
+import com.poorld.badget.entity.ConfigEntity;
 import com.poorld.badget.entity.ItemAppEntity;
+import com.poorld.badget.utils.ConfigUtils;
 import com.poorld.badget.utils.PkgManager;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class SelectAppAct extends AppCompatActivity {
 
@@ -77,11 +81,16 @@ public class SelectAppAct extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mAppAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         refreshData();
     }
 
     private void refreshData() {
+        Log.d("TAG", "refreshData: ");
         Log.d("TAG", "mShowSystemApp: " + mShowSystemApp);
 
         List<ItemAppEntity> apps = mShowSystemApp ? PkgManager.getSystemAndUserApp(this) : PkgManager.getUserApp(this);
@@ -89,6 +98,16 @@ public class SelectAppAct extends AppCompatActivity {
         if (!TextUtils.isEmpty(mSearch)) {
             apps = PkgManager.filterApp(apps, mSearch);
         }
+
+        Map<String, ConfigEntity.PkgConfig> pkgConfigs = ConfigUtils.getPkgConfigs();
+
+        apps.forEach(itemAppEntity -> {
+            ConfigEntity.PkgConfig pkgConfig = pkgConfigs.get(itemAppEntity.getPackageName());
+            if (pkgConfig != null && pkgConfig.isEnabled()) {
+                itemAppEntity.setHookEnabled(true);
+            }
+        });
+
         Log.d("TAG", "userAppsSize=" + apps.size());
         mAppAdapter.setList(apps);
         if (mSwipeRefreshLayout.isRefreshing()) {

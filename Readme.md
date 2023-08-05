@@ -31,21 +31,53 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
 │   │   └── libfrida_gadget.so
 │   ├── arm64-v7a
 │   │   └── libfrida_gadget.so
-│   └── com.network.xf100
-│       └── hook.js
+│   ├── com.network.xf100
+│   │   └── hook.js
+│   │
+│   └── badget.json
+└
 ```
 
-### 配置
+### 配置文件
 
+badget.package.conf
+```text
+active=true
+com.network.xf100=true
+com.tencent.mm=true
+```
+
+badget.jspath.conf
+```text
+com.network.xf100=/sdcard/xf.js
+com.tencent.mm=/sdcard/tencent.js
+```
+
+badget.yaml(后面升级再考虑)
+```yaml
+active: true
+packageConfigList:
+ com.network.xf100:
+     enable: true
+     sourceJs: /sdcard/xf.js
+     realityJs: /data/local/tmp/badget/com.network.xf100/hook.js
+
+ com.tencent.mm:
+     enable: false
+     sourceJs: /sdcard/tencent.js
+     realityJs: /data/local/tmp/badget/com.tencent.mm/hook.js
+```
 
 
 ### 未实现
-实现界面化配置
-
-监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
-
-使用Material Design主题
-
+- 实现界面化配置
+- 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
+- ~~使用Material Design主题~~
+- 交互类型
+    1. Listen
+    2. Connect
+    3. Script
+    4. ScriptDirectory
 ### 日志
 
 ```log

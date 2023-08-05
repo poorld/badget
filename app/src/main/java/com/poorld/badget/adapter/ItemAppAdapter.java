@@ -39,18 +39,7 @@ public class ItemAppAdapter extends RecyclerView.Adapter<ItemAppAdapter.ViewHold
             return;
         }
         mList.addAll(list);
-        mList.sort((entity1, entity2) -> {
-            if (entity1.isHookEnabled() && !entity2.isHookEnabled()) {
-                return -1;
-            }
-            if (entity1.isHookEnabled() && entity2.isHookEnabled()) {
-                return 0;
-            }
-            if (!entity1.isHookEnabled() && entity2.isHookEnabled()) {
-                return 0;
-            }
-            return -1;
-        });
+        mList.sort(Comparator.comparing(ItemAppEntity::isHookEnabled).reversed());
         notifyDataSetChanged();
     }
 

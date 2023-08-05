@@ -25,4 +25,22 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="管理">
+        <Preference
+            app:key="pref_js_path"
+            app:icon="@drawable/baseline_token_26"
+            app:title="hook脚本"
+            app:summary="/sdcard/xf100.js"/>
+
+        <ListPreference
+            app:defaultValue="Script"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="交互模式"
+            app:selectable="false"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
