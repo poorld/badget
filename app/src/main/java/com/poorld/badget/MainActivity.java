@@ -23,12 +23,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -38,7 +32,6 @@ import com.google.android.material.textview.MaterialTextView;
 import com.poorld.badget.activity.SelectAppAct;
 import com.poorld.badget.app.MyApp;
 import com.poorld.badget.utils.ConfigUtils;
-import com.poorld.badget.utils.ShellUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         initCard = (MaterialCardView) findViewById(R.id.init_card);
         initButton = (MaterialButton) findViewById(R.id.btn_init);
         initButton.setOnClickListener( v -> {
-            copy();
+            initBadget();
         });
         fabSelectApp = (FloatingActionButton) findViewById(R.id.fab_select_app);
         fabSelectApp.setOnClickListener(v -> startActivity(new Intent(this, SelectAppAct.class)));
@@ -130,32 +123,16 @@ public class MainActivity extends AppCompatActivity {
         checkInited();
     }
 
-    private void copy() {
+    private void initBadget() {
 
         new Thread(() -> {
             // /data/user/0/com.poorld.badget/app_cache
             File cache = getDir("cache", Context.MODE_PRIVATE);
             Log.d(TAG, "copy: " + cache.getPath());
-            /**
-             * from
-             *      assets/badget/
-             * to
-             *      /data/user/0/com.poorld.badget/app_cache
-             */
-            copyFile("badget", cache.getPath());
 
+            int result = ConfigUtils.firstInit(getApplicationContext(), ConfigUtils.ASSETS_BADGET_PATH, cache.getPath());
 
-            /**
-             * from
-             *      /data/user/0/com.poorld.badget/app_cache
-             * to
-             *      /data/local/tmp/badget/
-             */
-            List<String> cmds = new ArrayList<>();
-            cmds.add(String.format("cp -r %s/* %s", cache.getPath(), ConfigUtils.getBadgetDataPath()));
-            cmds.add("chmod -R 777 " + ConfigUtils.getBadgetDataPath());
-            ShellUtils.CommandResult result = ShellUtils.execCommand(cmds, true, true);
-            if (result.result == 0) {
+            if (result == 0) {
                 mainHandler.sendEmptyMessage(MSG_INIT_SUCCESS);
             } else {
                 mainHandler.sendEmptyMessage(MSG_INIT_FAILED);
@@ -169,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
         boolean badgetSoExists = ConfigUtils.checkBadgetSoExists();
         if (badgetSoExists) {
             initCard.setVisibility(View.GONE);
+        }
+        boolean badgetConfigExists = ConfigUtils.checkBadgetConfigExists();
+        if (badgetConfigExists) {
+            ConfigUtils.initConfig();
         }
     }
 
@@ -188,40 +169,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void copyFile(String src, String dst) {
-        try {
-            String[] badgetsDirs = getAssets().list(src);
-            Log.d("TAG", "badgetsDirs: " + Arrays.toString(badgetsDirs));
-            if (badgetsDirs.length > 0) {
-                File file = new File(dst);
-                if (!file.exists()) file.mkdirs();
-                for (String fileName : badgetsDirs) {
-                    if (!src.equals("")) { // assets 文件夹下的目录
-                        copyFile( src + File.separator + fileName, dst + File.separator + fileName);
-                    } else { // assets 文件夹
-                        copyFile( fileName, dst + File.separator + fileName);
-                    }
-                }
-            } else {
-                File outFile = new File(dst);
-                if (!outFile.exists()) {
-                    outFile.createNewFile();
-                }
-                InputStream is = getAssets().open(src);
-                FileOutputStream fos = new FileOutputStream(outFile);
-                byte[] buffer = new byte[1024];
-                int byteCount;
-                while ((byteCount = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, byteCount);
-                }
-                fos.flush();
-                is.close();
-                fos.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

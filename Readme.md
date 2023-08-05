@@ -39,18 +39,22 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
 ```
 
 ### 配置文件
-
-badget.package.conf
-```text
-active=true
-com.network.xf100=true
-com.tencent.mm=true
-```
-
-badget.jspath.conf
-```text
-com.network.xf100=/sdcard/xf.js
-com.tencent.mm=/sdcard/tencent.js
+```json
+{
+    "enabled":true,
+    "pkgConfigs":{
+        "com.network.xf100":{
+            "enabled":true,
+            "jsPath":"/data/local/tmp/badget/com.network.xf100/hook.js",
+            "pkgName":"com.network.xf100"
+        },
+        "com.android.chrome":{
+            "enabled":false,
+            "jsPath":"/data/local/tmp/badget/com.android.chrome/hook.js",
+            "pkgName":"com.android.chrome"
+        }
+    }
+}
 ```
 
 badget.yaml(后面升级再考虑)

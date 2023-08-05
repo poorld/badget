@@ -39,6 +39,9 @@ public class ConfigUtils {
     private static Gson gson = new Gson();
     public static final String FILE_NAME_BADGET_CONFIG = "badget.json";
 
+    // assets资源目录下的badget目录
+    public static final String ASSETS_BADGET_PATH = "badget";
+
     // /data/local/tmp/badget/
     public static String getBadgetDataPath() {
         return BADGET_DATA_PATH;
@@ -118,6 +121,11 @@ public class ConfigUtils {
         }
 
         return true;
+    }
+
+    public static boolean checkBadgetConfigExists() {
+        File pkgConfigFile = new File(getBadgetConfigPath());
+        return pkgConfigFile.exists();
     }
 
 
@@ -229,6 +237,47 @@ public class ConfigUtils {
         return json.replaceAll("\\\\", "");
     }
 
+    public static int firstInit(Context applicationContext, String assetsBadgetPath, String appCachePath) {
+
+        /**
+         * from
+         *      assets/badget/
+         * to
+         *      /data/user/0/com.poorld.badget/app_cache
+         */
+        CommonUtils.copyAssetsFile(applicationContext, assetsBadgetPath, appCachePath);
+        List<String> cmds = new ArrayList<>();
+
+        /**
+         * from
+         *      /data/user/0/com.poorld.badget/app_cache
+         * to
+         *      /data/local/tmp/badget/
+         */
+        cmds.add("mkdir " + ConfigUtils.getBadgetDataPath());
+        cmds.add(String.format("cp -r %s/* %s", appCachePath, ConfigUtils.getBadgetDataPath()));
+        cmds.add("chmod -R 777 " + ConfigUtils.getBadgetDataPath());
+
+        /***
+         * create
+         *       /data/local/tmp/badget/badget.json
+         */
+        File pkgConfigFile = new File(getBadgetConfigPath());
+        if (!pkgConfigFile.exists()) {
+            cmds.add("touch " + getBadgetConfigPath());
+            cmds.add("chmod 777 " + getBadgetConfigPath());
+        }
+
+        ShellUtils.CommandResult result = ShellUtils.execCommand(cmds, true, true);
+        if (result.result == 0) {
+            Log.d(TAG, "create file success!");
+        } else {
+            Log.d(TAG, "create file failed!");
+            throw new RuntimeException();
+        }
+        return result.result;
+    }
+
 
 
     public static void initConfig() {
@@ -257,6 +306,7 @@ public class ConfigUtils {
             if (result.result == 0) {
                 Log.d(TAG, "create file success!");
             } else {
+                Log.d(TAG, "create file failed!");
                 throw new RuntimeException();
             }
             mConfigCache = new ConfigEntity();

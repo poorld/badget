@@ -127,19 +127,7 @@ public class SelectAppAct extends AppCompatActivity {
 
             mSwipeRefreshLayout.setRefreshing(true);
             initData();
-        } /*else if (item.getItemId() == R.id.menu_show_system) {
-
-        } else if (item.getItemId() == R.id.menu_sort_by_label) {
-
-        } else if (item.getItemId() == R.id.menu_sort_by_package_name) {
-
-        } else if (item.getItemId() == R.id.menu_sort_by_install_time) {
-
-        } else if (item.getItemId() == R.id.menu_sort_by_update_time) {
-
-        } else if (item.getItemId() == R.id.menu_reverse_order) {
-
-        }*/
+        }
         return super.onOptionsItemSelected(item);
     }
 
