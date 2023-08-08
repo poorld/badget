@@ -179,8 +179,7 @@ public class CommonUtils {
             targetFile = new File(path);
 
             if (!targetFile.getParentFile().exists()) {
-                //boolean mkdir = targetFile.getParentFile().mkdir();
-                //Log.d(TAG, "mkdir: " + mkdir);
+                // create dir: /data/local/tmp/badget/packageName/
                 ShellUtils.execCommand(new String[]{
                         "mkdir " + targetFile.getParentFile().getPath(),
                         "touch " + targetFile.getPath(),
