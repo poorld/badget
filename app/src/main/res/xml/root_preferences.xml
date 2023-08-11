@@ -30,7 +30,7 @@
             app:key="pref_js_path"
             app:icon="@drawable/baseline_token_26"
             app:title="hook脚本"
-            app:summary="/sdcard/xf100.js"/>
+            app:summary="无"/>
 
         <ListPreference
             app:defaultValue="Script"

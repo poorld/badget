@@ -71,6 +71,9 @@ public class AppSettingsAct extends AppCompatActivity {
                 if (file.exists()) {
                     Log.d(TAG, "saveFileFromUri success: ");
                     ConfigEntity.PkgConfig pkgConfig = ConfigUtils.getPkgConfig(mPackageName);
+                    if (pkgConfig == null) {
+                        return;
+                    }
                     pkgConfig.setJsPath(file.getPath());
                     pkgConfig.setSoName(ConfigUtils.getRandomName());
                     ConfigUtils.updatePkgConfig();
@@ -106,11 +109,13 @@ public class AppSettingsAct extends AppCompatActivity {
                 mApp = PkgManager.getItemAppEntity(getActivity(), pkg);
                 if (mApp != null) {
                     pkgConfig = ConfigUtils.getPkgConfig(mApp.getPackageName());
+                    if (pkgConfig != null) {
+                        prefEnable.setChecked(pkgConfig.isEnabled());
+                    }
                     prefApp.setTitle(mApp.getAppName());
                     prefApp.setSummary(mApp.getPackageName());
                     Drawable drawable = CommonUtils.resizeDrawable(getContext(), mApp.getDrawable(), 30, 30);
                     prefApp.setIcon(drawable);
-                    prefEnable.setChecked(pkgConfig.isEnabled());
                     prefEnable.setOnPreferenceChangeListener(this);
                     prefJs.setOnPreferenceClickListener(this);
                 }
@@ -121,12 +126,16 @@ public class AppSettingsAct extends AppCompatActivity {
         public void onResume() {
             super.onResume();
             if (mApp != null) {
-                String jsPath = ConfigUtils.getPkgConfig(mApp.getPackageName()).getJsPath();
-                if (!TextUtils.isEmpty(jsPath)) {
-                    prefJs.setSummary(jsPath);
-                } else {
-                    prefJs.setSummary("无");
+                ConfigEntity.PkgConfig pkgConfig = ConfigUtils.getPkgConfig(mApp.getPackageName());
+                if (pkgConfig != null) {
+                    String jsPath = pkgConfig.getJsPath();
+                    if (!TextUtils.isEmpty(jsPath)) {
+                        prefJs.setSummary(jsPath);
+                    } else {
+                        prefJs.setSummary("无");
+                    }
                 }
+
             }
         }
 

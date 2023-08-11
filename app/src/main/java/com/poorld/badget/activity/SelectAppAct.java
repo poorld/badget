@@ -100,13 +100,16 @@ public class SelectAppAct extends AppCompatActivity {
         }
 
         Map<String, ConfigEntity.PkgConfig> pkgConfigs = ConfigUtils.getPkgConfigs();
+        if (pkgConfigs != null) {
+            apps.forEach(itemAppEntity -> {
+                ConfigEntity.PkgConfig pkgConfig = pkgConfigs.get(itemAppEntity.getPackageName());
+                if (pkgConfig != null && pkgConfig.isEnabled()) {
+                    itemAppEntity.setHookEnabled(true);
+                }
+            });
+        }
 
-        apps.forEach(itemAppEntity -> {
-            ConfigEntity.PkgConfig pkgConfig = pkgConfigs.get(itemAppEntity.getPackageName());
-            if (pkgConfig != null && pkgConfig.isEnabled()) {
-                itemAppEntity.setHookEnabled(true);
-            }
-        });
+
 
         Log.d("TAG", "userAppsSize=" + apps.size());
         mAppAdapter.setList(apps);

@@ -135,7 +135,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?textAppearanceTitleMedium"
                                 android:textColor="?colorOnSecondaryContainer"
-                                android:text="初始化工作?" />
+                                android:text="是否初始化?" />
                         </LinearLayout>
 
                         <com.google.android.material.textview.MaterialTextView
@@ -157,6 +157,13 @@
                             android:text="初始化" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_marginTop="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@mipmap/icon_sword"/>
 
             </LinearLayout>
 

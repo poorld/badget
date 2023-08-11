@@ -70,6 +70,7 @@ gadget版本: 16.0.17
 - 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
 - 脚本仓库(脚本市场)
 - 关于界面
+- frida-gadget库去特征
 - 可选交互类型
   1. Listen
   2. Connect

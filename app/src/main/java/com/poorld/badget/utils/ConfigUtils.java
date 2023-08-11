@@ -3,6 +3,7 @@ package com.poorld.badget.utils;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -285,7 +286,7 @@ public class ConfigUtils {
             Log.d(TAG, "create file success!");
         } else {
             Log.d(TAG, "create file failed!");
-            throw new RuntimeException();
+            //throw new RuntimeException();
         }
         return result.result;
     }
@@ -349,6 +350,9 @@ public class ConfigUtils {
     }
 
     public static ConfigEntity.PkgConfig getPkgConfig(String packageName) {
+        if (mConfigCache == null) {
+            return null;
+        }
         Map<String, ConfigEntity.PkgConfig> configMap = mConfigCache.getPkgConfigs();
         ConfigEntity.PkgConfig pkgConfig = configMap.get(packageName);
         if (pkgConfig == null) {
@@ -361,6 +365,9 @@ public class ConfigUtils {
     }
 
     public static Map<String, ConfigEntity.PkgConfig> getPkgConfigs() {
+        if (mConfigCache == null) {
+            return null;
+        }
         return mConfigCache.getPkgConfigs();
     }
 
