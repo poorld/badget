@@ -1,14 +1,14 @@
 ### 说明
 本项目为frida gadget动态注入工具
 
-gadget版本: 16.0.17
+badget基于xposed和frida-gadget，实现frida-gadget动态注入。
 
+gadget版本: 16.0.17
 
 参考项目  [xcubebase](https://github.com/svengong/xcubebase)
 
 参考博客地址: [Frida持久化方案(Xcube)之方案二——基于xposed](https://bbs.kanxue.com/thread-266784.htm)
 
-badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_gadget.so库未重命名，请重命名过检测!
 
 ```
 免责声明：
@@ -20,11 +20,6 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
 * 2.在/data/user/0/packageName/app_libs/目录下生成libfrida_gadget.config.so
 * 3.反射修改nativeLibraryDirectories，优先加载/data/user/0/packageName/app_libs/
 * 4.调用loadLibrary0加载libfrida_gadget.so库
-
-### 使用步骤
-* 1.点击hello_badget初始化(需要root)。初始化做的工作是把assets目录下的so库复制到/data/local/tmp/badget
-* 2.在/data/local/tmp/badget/目录下新建文件夹,名称为应用包名
-* 3.把hook.js放在/data/local/tmp/badget/包名/ 目录下
 
 ### 目录结构
 ```tree
@@ -49,33 +44,22 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
     "pkgConfigs":{
         "com.network.xf100":{
             "enabled":true,
-            "jsPath":"/data/local/tmp/badget/com.network.xf100/hook.js",
-            "pkgName":"com.network.xf100",
-            "soName": "libgienx"
+            "jsPath":"/data/local/tmp/badget/com.xxx.xxx/hook.js",
+            "pkgName":"com.xxx.xxx",
+            "appName":"xxx",
+            "soName":"libgienx",
+            "type":"script"
         },
         "com.android.chrome":{
             "enabled":false,
-            "jsPath":"/data/local/tmp/badget/com.android.chrome/hook.js",
-            "pkgName":"com.android.chrome",
-            "soName": "libxhqpr"
+            "jsPath":"/data/local/tmp/badget/com.aaaa.bbb/hook.js",
+            "pkgName":"com.aaa.bbb",
+            "appName":"xxx",
+            "soName":"libxhqpr",
+            "type":"script"
         }
     }
 }
-```
-
-badget.yaml(后面升级再考虑)
-```yaml
-active: true
-packageConfigList:
- com.network.xf100:
-     enable: true
-     sourceJs: /sdcard/xf.js
-     realityJs: /data/local/tmp/badget/com.network.xf100/hook.js
-
- com.tencent.mm:
-     enable: false
-     sourceJs: /sdcard/tencent.js
-     realityJs: /data/local/tmp/badget/com.tencent.mm/hook.js
 ```
 
 
