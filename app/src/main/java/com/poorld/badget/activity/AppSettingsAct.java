@@ -72,6 +72,7 @@ public class AppSettingsAct extends AppCompatActivity {
                     Log.d(TAG, "saveFileFromUri success: ");
                     ConfigEntity.PkgConfig pkgConfig = ConfigUtils.getPkgConfig(mPackageName);
                     pkgConfig.setJsPath(file.getPath());
+                    pkgConfig.setSoName(ConfigUtils.getRandomName());
                     ConfigUtils.updatePkgConfig();
                 }
             }

@@ -10,6 +10,10 @@ gadget版本: 16.0.17
 
 badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_gadget.so库未重命名，请重命名过检测!
 
+```
+免责声明：
+本项目仅限用于逆向安全领域爱好者学习参考和研究目的，不得用于商业或者非法用途，否则，一切后果请用户自负。
+```
 
 ### 实现原理
 * 1.拷贝libfrida_gadget.so到/data/user/0/packageName/app_libs/目录下
@@ -46,12 +50,14 @@ badget基于xposed和frida-gadget，实现frida-gadget动态注入。libfrida_ga
         "com.network.xf100":{
             "enabled":true,
             "jsPath":"/data/local/tmp/badget/com.network.xf100/hook.js",
-            "pkgName":"com.network.xf100"
+            "pkgName":"com.network.xf100",
+            "soName": "libgienx"
         },
         "com.android.chrome":{
             "enabled":false,
             "jsPath":"/data/local/tmp/badget/com.android.chrome/hook.js",
-            "pkgName":"com.android.chrome"
+            "pkgName":"com.android.chrome",
+            "soName": "libxhqpr"
         }
     }
 }
@@ -74,32 +80,47 @@ packageConfigList:
 
 
 ### 未实现
-- 实现界面化配置
-- 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
+- ~~实现界面化配置~~
 - ~~使用Material Design主题~~
-- 交互类型
-    1. Listen
-    2. Connect
-    3. Script
-    4. ScriptDirectory
-### 日志
+- ~~gadget库随机命名~~
+- 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
+- 脚本仓库(脚本市场)
+- 关于界面
+- 可选交互类型
+  1. Listen
+  2. Connect
+  3. ~~Script~~
+  4. ScriptDirectory
 
+
+### 日志
 ```log
-I Loading module com.poorld.badget from /data/app/~~IL2zdeRcpczHoSYRvQltxA==/com.poorld.badget-3Bnvup5FXuuVi8hf9-3JKQ==/base.apk
-I    Loading class com.poorld.badget.hook.Badget
-D  handleLoadPackage: com.network.xf100
-D  beforeHookedMethod:
-D  attach beforeHookedMethod toPath:/data/user/0/com.network.xf100/app_libs
-D  appGadgetLibPath: /data/user/0/com.network.xf100/app_libs/libfrida_gadget.so
-D  复制文件到/data/user/0/com.network.xf100/app_libs/libfrida_gadget.so
-D  saveAppGadgetConfig:
-D  getGadgetConfigJson: {"interaction":{"type":"script","path":"\/data\/local\/tmp\/badget\/com.network.xf100\/hook.js","on_change":"reload"}}
-D  gadgetConfigJson: {"interaction":{"type":"script","path":"/data/local/tmp/badget/com.network.xf100/hook.js","on_change":"reload"}}
-D  saveConfig to /data/user/0/com.network.xf100/app_libs/libfrida_gadget.config.so
-D  afterHookedMethod:
-D  copy libs and config to : /data/user/0/com.network.xf100/app_libs
-D  installNativeLibraryPath:
-D  libDirs: [/data/user/0/com.network.xf100/app_libs, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.network.xf100-RSJRK8IuxruuvxywghYu5A==/lib/arm, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.network.xf100-RSJRK8IuxruuvxywghYu5A==/base.apk!/lib/armeabi-v7a, /system/lib, /system_ext/lib]
-D  ClassLoader: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.network.xf100-RSJRK8IuxruuvxywghYu5A==/base.apk"],nativeLibraryDirectories=[/data/user/0/com.network.xf100/app_libs, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.network.xf100-RSJRK8IuxruuvxywghYu5A==/lib/arm, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.network.xf100-RSJRK8IuxruuvxywghYu5A==/base.apk!/lib/armeabi-v7a, /system/lib, /system_ext/lib, /system/lib, /system_ext/lib]]]
-D  System.load: /data/user/0/com.network.xf100/app_libs/libfrida_gadget.so
+saveConfig {"enabled":true,"pkgConfigs":{"com.xxx.xxx":{"appName":"xxx","enabled":true,"pkgName":"com.xxx.xxx","type":"Script"}}}
+saveConfig to /data/local/tmp/badget/badget.json
+saveFileFromUri: 
+uri: content://com.android.externalstorage.documents/document/primary%3ADownload%2FWeiXin%2Fxf.js
+fileSavePath: /data/local/tmp/badget/com.xxx.xxx/hook.js
+saveConfig {"enabled":true,"pkgConfigs":{"com.xxx.xxx":{"appName":"xxx","enabled":true,"jsPath":"/data/local/tmp/badget/com.xxx.xxx/hook.js","pkgName":"com.xxx.xxx","soName":"libnwwyg","type":"Script"}}}
+saveConfig to /data/local/tmp/badget/badget.json
+
+handleLoadPackage: com.xxx.xxx
+initConfig: 
+mConfigCache: null
+readFile: 
+mConfigCache: ConfigEntity{enabled=true, pkgConfigs={com.xxx.xxx=PkgConfig{pkgName='com.xxx.xf100', appName='xxx', jsPath='/data/local/tmp/badget/com.xxx.xxx/hook.js', soName='csclr', type=Script, enabled=true}}}
+mConfig: ConfigEntity{enabled=true, pkgConfigs={com.xxx.xxx=PkgConfig{pkgName='com.xxx.xxx', appName='xxx', jsPath='/data/local/tmp/badget/com.xxx.xxx/hook.js', soName='csclr', type=Script, enabled=true}}}
+beforeHookedMethod: 
+appGadgetLibPath: /data/user/0/com.xxx.xxx/app_libs/libcsclr.so
+copyFile: 
+fromDir: /data/local/tmp/badget/armeabi-v7a
+toDir: /data/user/0/com.xxx.xxx/app_libs
+复制文件到/data/user/0/com.xxx.xxx/app_libs/libcsclr.so
+saveAppGadgetConfig: pkgConfig=PkgConfig{pkgName='com.xxx.xxx', appName='xxx', jsPath='/data/local/tmp/badget/com.xxx.xxx/hook.js', soName='csclr', type=Script, enabled=true}
+getGadgetConfigJson: {"interaction":{"type":"script","path":"\/data\/local\/tmp\/badget\/com.xxx.xxx\/hook.js","on_change":"reload"}}
+gadgetConfigJson: {"interaction":{"type":"script","path":"/data/local/tmp/badget/com.xxx.xxx/hook.js","on_change":"reload"}}
+saveConfig {"interaction":{"type":"script","path":"/data/local/tmp/badget/com.xxx.xxx/hook.js","on_change":"reload"}}
+saveConfig to /data/user/0/com.xxx.xxx/app_libs/libcsclr.config.so
+afterHookedMethod: 
+ClassLoader: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.xxx.xxx-RSJRK8IuxruuvxywghYu5A==/base.apk"],nativeLibraryDirectories=[/data/user/0/com.xxx.xxx/app_libs, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.xxx.xxx-RSJRK8IuxruuvxywghYu5A==/lib/arm, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.xxx.xxx-RSJRK8IuxruuvxywghYu5A==/base.apk!/lib/armeabi-v7a, /system/lib, /system_ext/lib, /system/lib, /system_ext/lib]]]
+System.load: /data/user/0/com.xxx.xxx/app_libs/libcsclr.so
 ```

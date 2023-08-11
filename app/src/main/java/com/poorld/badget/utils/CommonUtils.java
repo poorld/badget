@@ -26,9 +26,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Random;
 
 public class CommonUtils {
     private static final String TAG = "Badget#CommonUtils";
+
+    private static final String letter = "abcdefghijklmnopqrstuvwxyz";
 
     public static int dip2px(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density;
@@ -51,6 +54,22 @@ public class CommonUtils {
         int dstHight = CommonUtils.dip2px(context, height);
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, dstWidth, dstHight, false);
         return new BitmapDrawable(context.getResources(), bitmapResized);
+    }
+
+    public static String randomString(int number) {
+        if (number >= 1) {
+            Random random = new Random();
+
+            if (number == 1) {
+                return String.valueOf(letter.charAt(random.nextInt(27)));
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < number; i++) {
+                sb.append(letter.charAt(random.nextInt(27)));
+            }
+            return sb.toString();
+        }
+        return null;
     }
 
     /**
@@ -244,16 +263,16 @@ public class CommonUtils {
 
 
     /**
-     * @param fromFiles 指定的下载目录
-     * @param toFile    应用的包路径
+     * @param fromDir 指定的下载目录
+     * @param toDir    应用的包路径
      */
-    public static void copyFile(String fromFiles, String toFile) {
+    public static void copyFile(String fromDir, String toDir,String gadgetLibName) {
         Log.d(TAG, "copyFile: ");
-        Log.d(TAG, "fromFiles: " + fromFiles);
-        Log.d(TAG, "toFile: " + toFile);
+        Log.d(TAG, "fromDir: " + fromDir);
+        Log.d(TAG, "toDir: " + toDir);
         //要复制的文件目录
         File[] currentFiles;
-        File root = new File(fromFiles);
+        File root = new File(fromDir);
         if (!root.exists()) {
             Log.d(TAG, root.getPath() + "目录不存在");
             return;
@@ -265,7 +284,7 @@ public class CommonUtils {
             return;
         }
         //目标目录
-        File targetDir = new File(toFile);
+        File targetDir = new File(toDir);
         //创建目录
         if (!targetDir.exists()) {
             targetDir.mkdirs();
@@ -274,10 +293,10 @@ public class CommonUtils {
         for (int i = 0; i < currentFiles.length; i++) {
             if (currentFiles[i].isDirectory()) {
                 //如果当前项为子目录 进行递归
-                copyFile(currentFiles[i].getPath() + "/", toFile + currentFiles[i].getName() + "/");
+                copyFile(currentFiles[i].getPath() + File.separator, toDir + currentFiles[i].getName() + File.separator, gadgetLibName);
             } else {
                 //如果当前项为文件则进行文件拷贝
-                int id = doCopy(currentFiles[i].getPath(), toFile + File.separator + currentFiles[i].getName());
+                int id = doCopy(currentFiles[i].getPath(), toDir + File.separator + /*currentFiles[i].getName()*/ gadgetLibName);
 
             }
         }

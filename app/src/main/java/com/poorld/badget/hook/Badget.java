@@ -79,11 +79,12 @@ public class Badget implements IXposedHookLoadPackage {
 
                     // /data/user/0/packageName/app_libs/
                     String applib = ConfigUtils.getAppPrivLibDir(base);
-                    String ABI = android.os.Process.is64Bit() ? "arm64-v8a" : "armeabi-v7a";
-                    File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(base);
+                    String ABI = android.os.Process.is64Bit() ? ConfigUtils.ABI_V8A : ConfigUtils.ABI_V7A;
+                    File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(base, pkgConfig.getSoName());
                     Log.d(TAG, "appGadgetLibPath: " + appGadgetLibPath);
                     if (!appGadgetLibPath.exists()) {
-                        CommonUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applib);
+                        String gadgetLibName = ConfigUtils.getGadgetLibName(pkgConfig.getSoName());
+                        CommonUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applib, gadgetLibName);
                         ConfigUtils.saveAppGadgetConfig(base, pkgConfig);
                     }
 
@@ -98,9 +99,15 @@ public class Badget implements IXposedHookLoadPackage {
 
                 Context context = (Context) param.args[0];
 
-                File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(context);
-                // libfrida_gadget库不存在
+                File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(context, pkgConfig.getSoName());
+                // librandom.so库不存在
                 if (!appGadgetLibPath.exists()) {
+                    return;
+                }
+
+                File appGadgetConfigLibPath = ConfigUtils.getAppGadgetConfigPath(context, pkgConfig.getSoName());
+                // librandom.config.so库不存在
+                if (!appGadgetConfigLibPath.exists()) {
                     return;
                 }
 
@@ -121,7 +128,7 @@ public class Badget implements IXposedHookLoadPackage {
                 //System.load(appGadgetLibPath.getPath());
 
                 // ok
-                XposedHelpers.callMethod(Runtime.getRuntime(), "loadLibrary0", context.getClassLoader(), "frida_gadget");
+                XposedHelpers.callMethod(Runtime.getRuntime(), "loadLibrary0", context.getClassLoader(), /*"frida_gadget"*/ pkgConfig.getSoName());
 
                 // error
                 // java.lang.UnsatisfiedLinkError: LspModuleClassLoader couldn't find "libfrida_gadget.so"

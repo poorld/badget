@@ -33,6 +33,8 @@ public class ConfigEntity {
         private String pkgName;
         private String appName;
         private String jsPath;
+
+        private String soName;
         private InteractionType type;
         private boolean enabled;
 
@@ -61,6 +63,14 @@ public class ConfigEntity {
             this.jsPath = jsPath;
         }
 
+        public String getSoName() {
+            return soName;
+        }
+
+        public void setSoName(String soName) {
+            this.soName = soName;
+        }
+
         public InteractionType getType() {
             return type;
         }
@@ -82,7 +92,8 @@ public class ConfigEntity {
             return "PkgConfig{" +
                     "pkgName='" + pkgName + '\'' +
                     ", appName='" + appName + '\'' +
-                    ", realityJs='" + jsPath + '\'' +
+                    ", jsPath='" + jsPath + '\'' +
+                    ", soName='" + soName + '\'' +
                     ", type=" + type +
                     ", enabled=" + enabled +
                     '}';

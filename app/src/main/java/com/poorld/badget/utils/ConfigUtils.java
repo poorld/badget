@@ -65,15 +65,27 @@ public class ConfigUtils {
 
 
     // /data/user/0/packageName/app_libs/libfrida_gadget.so
-    public static File getAppGadgetLibPath(Context context) {
+    public static File getAppGadgetLibPath(Context context,String soName) {
         File appDir = context.getDir("libs", Context.MODE_PRIVATE);
-        return new File(appDir, FRIDA_GADGET_LIB);
+        return new File(appDir, /*FRIDA_GADGET_LIB*/ getGadgetLibName(soName));
     }
 
     // /data/user/0/packageName/app_libs/libfrida_gadget.config.so
-    public static File getAppGadgetConfigPath(Context context) {
+    public static File getAppGadgetConfigPath(Context context, String soName) {
         File appDir = context.getDir("libs", Context.MODE_PRIVATE);
-        return new File(appDir, FRIDA_GADGET_CONFIG_LIB);
+        return new File(appDir, /*FRIDA_GADGET_CONFIG_LIB*/getGadgetConfigLibName(soName));
+    }
+
+    public static String getRandomName() {
+        return CommonUtils.randomString(5);
+    }
+
+    public static String getGadgetLibName(String randomName) {
+        return "lib" + randomName + ".so";
+    }
+
+    public static String getGadgetConfigLibName(String randomName) {
+        return "lib" + randomName + ".config.so";
     }
 
     // save to /data/user/0/packageName/app_libs/libfrida_gadget.config.so
@@ -98,7 +110,7 @@ public class ConfigUtils {
                 break;
         }
         Log.d(TAG, "gadgetConfigJson: " + gadgetConfigJson);
-        return CommonUtils.saveFile(gadgetConfigJson, getAppGadgetConfigPath(context).getPath());
+        return CommonUtils.saveFile(gadgetConfigJson, getAppGadgetConfigPath(context, pkgConfig.getSoName()).getPath());
     }
 
 
