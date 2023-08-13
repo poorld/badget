@@ -18,6 +18,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.poorld.badget.activity.AboutAct;
 import com.poorld.badget.activity.SelectAppAct;
 import com.poorld.badget.app.MyApp;
 import com.poorld.badget.utils.ConfigUtils;
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = (MaterialToolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         statusCard = (MaterialCardView) findViewById(R.id.status_card);
         moduleStatusIcon = (ImageView) findViewById(R.id.module_status_icon);
         moduleStatus = (MaterialTextView) findViewById(R.id.module_status);
@@ -170,6 +175,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_about, menu);
+        MenuItem aboutMenu = menu.findItem(R.id.menu_about);
+        aboutMenu.setOnMenuItemClickListener(this::startAboutAct);
+        return true;
+    }
+
+    private boolean startAboutAct(MenuItem menuItem) {
+        startActivity(new Intent(this, AboutAct.class));
+        return true;
+    }
 
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

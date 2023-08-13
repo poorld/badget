@@ -38,6 +38,9 @@ dependencies {
     implementation("dev.rikka.rikkax.material:material:2.5.1")
     implementation("dev.rikka.rikkax.material:material-preference:2.0.0")
 
+    implementation 'com.drakeet.about:about:2.5.2'
+    implementation 'com.drakeet.multitype:multitype:4.3.0'
+
     implementation 'androidx.appcompat:appcompat:1.6.1'
     compileOnly("dev.rikka.hidden:stub:3.4.3")
 

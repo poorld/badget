@@ -25,7 +25,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.SelectAppAct" />
-        <activity android:name="com.poorld.badget.activity.AppSettingsAct" /> <!-- 1、标识自己是否为一个Xposed模块 -->
+        <activity android:name="com.poorld.badget.activity.AppSettingsAct" />
+        <activity android:name="com.poorld.badget.activity.AboutAct"
+            android:theme="@style/AppTheme.About"/>
+
+        <!-- 1、标识自己是否为一个Xposed模块 -->
         <meta-data
             android:name="xposedmodule"
             android:value="true" /> <!-- 2、Xposed模块的描述信息 -->

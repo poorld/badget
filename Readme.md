@@ -67,9 +67,10 @@ gadget版本: 16.0.17
 - ~~实现界面化配置~~
 - ~~使用Material Design主题~~
 - ~~gadget库随机命名~~
+- ~~关于界面~~
+- frida-gadget版本动态下载(无需内置到assets目录)
 - 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
 - 脚本仓库(脚本市场)
-- 关于界面
 - frida-gadget库去特征
 - 可选交互类型
   1. Listen
@@ -77,6 +78,10 @@ gadget版本: 16.0.17
   3. ~~Script~~
   4. ScriptDirectory
 
+### 参考&致谢
+- [svengong/xcubebase](https://github.com/svengong/xcubebase)
+- [Dr-TSNG/Hide-My-Applist](https://github.com/Dr-TSNG/Hide-My-Applist)
+- [SeeFlowerX](https://github.com/SeeFlowerX)
 
 ### 日志
 ```log
