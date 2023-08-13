@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,7 +27,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class CommonUtils {
     private static final String TAG = "Badget#CommonUtils";
@@ -367,4 +372,72 @@ public class CommonUtils {
             e.printStackTrace();
         }
     }
+
+  public static void unzip(String zipFileString, boolean deleteZip) {
+      File zipFile = new File(zipFileString);
+      if (!zipFile.exists()) {
+          return;
+      }
+      String outPathString = zipFile.getParent();
+
+      Log.d(TAG, "unzip: " + zipFileString);
+      Log.d(TAG, "unzip path: " + outPathString);
+
+     FileInputStream fis = null; //文件输入流
+     ZipInputStream inZip = null; // android提供的zip包输入流
+     try {
+         fis = new FileInputStream(zipFileString); //先读取文件,
+         inZip = new ZipInputStream(fis);//将文件流变成zip输入流
+         ZipEntry zipEntry; //zip实体
+         String szName = "";
+         while ((zipEntry = inZip.getNextEntry()) != null) { //while(true)循环解析
+             szName = zipEntry.getName();
+             if (zipEntry.isDirectory()) {// 如果是文件夹
+                     szName = szName.substring(0, szName.length() - 1);
+                     File folder = new File(outPathString + File.separator + szName);
+                     folder.mkdirs();
+                 } else {//如果是文件
+                     File file = new File(outPathString + File.separator + szName);
+                     file.createNewFile();
+                     FileOutputStream out = new FileOutputStream(file);
+                     int length;
+                     byte[] buffer = new byte[1024];
+                     while ((length = inZip.read(buffer)) != -1) {
+                             out.write(buffer, 0, length);
+                             out.flush();
+                         }
+                     if (out != null) {
+                         out.close();
+                     }
+                 }
+             }
+         } catch (FileNotFoundException e) {
+             e.printStackTrace();
+         } catch (IOException e) {
+         e.printStackTrace();
+         } catch (Exception e) {
+         e.printStackTrace();
+         } finally {
+             if (fis != null) {
+                 try {
+                         fis.close();
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                     }
+                 }
+            if (inZip != null) {
+                 try {
+                         inZip.close();
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                     }
+                 }
+
+         if (deleteZip) {
+             zipFile.delete();
+         }
+     }
+
+     }
+
 }

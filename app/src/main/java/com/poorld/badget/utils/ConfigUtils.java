@@ -27,6 +27,7 @@ public class ConfigUtils {
     public static final String FRIDA_GADGET_LIB = "libfrida_gadget.so";
     public static final String FRIDA_GADGET_CONFIG_LIB = "libfrida_gadget.config.so";
 
+    private static final String DATA_LOCAL_TMP = "/data/local/tmp/";
     private static final String BADGET_DATA_PATH = "/data/local/tmp/badget/";
 
     public static final String HOOK_JS = "hook.js";
@@ -42,6 +43,11 @@ public class ConfigUtils {
 
     // assets资源目录下的badget目录
     public static final String ASSETS_BADGET_PATH = "badget";
+
+    // /data/local/tmp/badget/
+    public static String getDataTmpPath() {
+        return DATA_LOCAL_TMP;
+    }
 
     // /data/local/tmp/badget/
     public static String getBadgetDataPath() {
@@ -254,11 +260,16 @@ public class ConfigUtils {
 
         /**
          * from
-         *      assets/badget/
+         *      assets/badget/badget.zip
          * to
-         *      /data/user/0/com.poorld.badget/app_cache
+         *      /data/user/0/com.poorld.badget/app_cache/badget.zip
          */
         CommonUtils.copyAssetsFile(applicationContext, assetsBadgetPath, appCachePath);
+
+        /**
+         * unzip /data/user/0/com.poorld.badget/app_cache/badget.zip
+         */
+        CommonUtils.unzip(new File(appCachePath, "badget.zip").getPath(), true);
         List<String> cmds = new ArrayList<>();
 
         /**
@@ -268,7 +279,7 @@ public class ConfigUtils {
          *      /data/local/tmp/badget/
          */
         cmds.add("mkdir " + ConfigUtils.getBadgetDataPath());
-        cmds.add(String.format("cp -r %s/* %s", appCachePath, ConfigUtils.getBadgetDataPath()));
+        cmds.add(String.format("cp -r %s/* %s", appCachePath, ConfigUtils.getDataTmpPath()));
         cmds.add("chmod -R 777 " + ConfigUtils.getBadgetDataPath());
 
         /***
