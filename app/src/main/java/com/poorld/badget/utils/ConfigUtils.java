@@ -256,7 +256,11 @@ public class ConfigUtils {
         return json.replaceAll("\\\\", "");
     }
 
-    public static int firstInit(Context applicationContext, String assetsBadgetPath, String appCachePath) {
+    public static int firstInit(Context applicationContext) {
+
+        // /data/user/0/com.poorld.badget/app_cache
+        File appCache = applicationContext.getDir("cache", Context.MODE_PRIVATE);
+        Log.d(TAG, "appCachePath: " + appCache.getPath());
 
         /**
          * from
@@ -264,32 +268,39 @@ public class ConfigUtils {
          * to
          *      /data/user/0/com.poorld.badget/app_cache/badget.zip
          */
-        CommonUtils.copyAssetsFile(applicationContext, assetsBadgetPath, appCachePath);
+        CommonUtils.copyAssetsFile(applicationContext, ConfigUtils.ASSETS_BADGET_PATH, appCache.getPath());
 
         /**
          * unzip /data/user/0/com.poorld.badget/app_cache/badget.zip
          */
-        CommonUtils.unzip(new File(appCachePath, "badget.zip").getPath(), true);
+        String zipFilePath = new File(appCache.getPath(), "badget.zip").getPath();
+        CommonUtils.unzip(zipFilePath, true);
         List<String> cmds = new ArrayList<>();
 
         /**
-         * from
+         * copy from
          *      /data/user/0/com.poorld.badget/app_cache
          * to
-         *      /data/local/tmp/badget/
+         *      /data/local/tmp/
+         *
+         * chmod 777 /data/local/tmp/badget
+         *
+         * delete /data/user/0/com.poorld.badget/app_cache
          */
         cmds.add("mkdir " + ConfigUtils.getBadgetDataPath());
-        cmds.add(String.format("cp -r %s/* %s", appCachePath, ConfigUtils.getDataTmpPath()));
-        cmds.add("chmod -R 777 " + ConfigUtils.getBadgetDataPath());
+        cmds.add(String.format("cp -r %s/* %s", appCache.getPath(), ConfigUtils.DATA_LOCAL_TMP));
+        cmds.add("chmod -R 777 " + ConfigUtils.BADGET_DATA_PATH);
+        cmds.add("rm -rf " + appCache.getPath());
 
         /***
          * create
          *       /data/local/tmp/badget/badget.json
          */
-        File pkgConfigFile = new File(getBadgetConfigPath());
+        String badgetConfigPath = getBadgetConfigPath();
+        File pkgConfigFile = new File(badgetConfigPath);
         if (!pkgConfigFile.exists()) {
-            cmds.add("touch " + getBadgetConfigPath());
-            cmds.add("chmod 777 " + getBadgetConfigPath());
+            cmds.add("touch " + badgetConfigPath);
+            cmds.add("chmod 777 " + badgetConfigPath);
         }
 
         ShellUtils.CommandResult result = ShellUtils.execCommand(cmds, true, true);

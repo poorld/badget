@@ -270,6 +270,7 @@ public class CommonUtils {
     /**
      * @param fromDir 指定的下载目录
      * @param toDir    应用的包路径
+     * @param gadgetLibName 给gadget库重命名
      */
     public static void copyFile(String fromDir, String toDir,String gadgetLibName) {
         Log.d(TAG, "copyFile: ");
@@ -373,71 +374,71 @@ public class CommonUtils {
         }
     }
 
-  public static void unzip(String zipFileString, boolean deleteZip) {
-      File zipFile = new File(zipFileString);
-      if (!zipFile.exists()) {
-          return;
-      }
-      String outPathString = zipFile.getParent();
+    public static void unzip(String zipFileString, boolean deleteZip) {
+        File zipFile = new File(zipFileString);
+        if (!zipFile.exists()) {
+            return;
+        }
+        String outPathString = zipFile.getParent();
 
-      Log.d(TAG, "unzip: " + zipFileString);
-      Log.d(TAG, "unzip path: " + outPathString);
+        Log.d(TAG, "unzip: " + zipFileString);
+        Log.d(TAG, "unzip path: " + outPathString);
 
-     FileInputStream fis = null; //文件输入流
-     ZipInputStream inZip = null; // android提供的zip包输入流
-     try {
-         fis = new FileInputStream(zipFileString); //先读取文件,
-         inZip = new ZipInputStream(fis);//将文件流变成zip输入流
-         ZipEntry zipEntry; //zip实体
-         String szName = "";
-         while ((zipEntry = inZip.getNextEntry()) != null) { //while(true)循环解析
-             szName = zipEntry.getName();
-             if (zipEntry.isDirectory()) {// 如果是文件夹
-                     szName = szName.substring(0, szName.length() - 1);
-                     File folder = new File(outPathString + File.separator + szName);
-                     folder.mkdirs();
-                 } else {//如果是文件
-                     File file = new File(outPathString + File.separator + szName);
-                     file.createNewFile();
-                     FileOutputStream out = new FileOutputStream(file);
-                     int length;
-                     byte[] buffer = new byte[1024];
-                     while ((length = inZip.read(buffer)) != -1) {
-                             out.write(buffer, 0, length);
-                             out.flush();
-                         }
-                     if (out != null) {
-                         out.close();
-                     }
-                 }
-             }
-         } catch (FileNotFoundException e) {
-             e.printStackTrace();
-         } catch (IOException e) {
-         e.printStackTrace();
-         } catch (Exception e) {
-         e.printStackTrace();
-         } finally {
-             if (fis != null) {
-                 try {
-                         fis.close();
-                     } catch (IOException e) {
-                         e.printStackTrace();
-                     }
-                 }
+        FileInputStream fis = null; //文件输入流
+        ZipInputStream inZip = null; // android提供的zip包输入流
+        try {
+            fis = new FileInputStream(zipFileString); //先读取文件,
+            inZip = new ZipInputStream(fis);//将文件流变成zip输入流
+            ZipEntry zipEntry; //zip实体
+            String szName = "";
+            while ((zipEntry = inZip.getNextEntry()) != null) { //while(true)循环解析
+                szName = zipEntry.getName();
+                if (zipEntry.isDirectory()) {// 如果是文件夹
+                    szName = szName.substring(0, szName.length() - 1);
+                    File folder = new File(outPathString + File.separator + szName);
+                    folder.mkdirs();
+                } else {//如果是文件
+                    File file = new File(outPathString + File.separator + szName);
+                    file.createNewFile();
+                    FileOutputStream out = new FileOutputStream(file);
+                    int length;
+                    byte[] buffer = new byte[1024];
+                    while ((length = inZip.read(buffer)) != -1) {
+                        out.write(buffer, 0, length);
+                        out.flush();
+                    }
+                    if (out != null) {
+                        out.close();
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             if (inZip != null) {
-                 try {
-                         inZip.close();
-                     } catch (IOException e) {
-                         e.printStackTrace();
-                     }
-                 }
+                try {
+                    inZip.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
-         if (deleteZip) {
-             zipFile.delete();
-         }
-     }
+            if (deleteZip) {
+                zipFile.delete();
+            }
+        }
 
-     }
+    }
 
 }

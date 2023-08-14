@@ -131,11 +131,8 @@ public class MainActivity extends AppCompatActivity {
     private void initBadget() {
 
         new Thread(() -> {
-            // /data/user/0/com.poorld.badget/app_cache
-            File cache = getDir("cache", Context.MODE_PRIVATE);
-            Log.d(TAG, "copy: " + cache.getPath());
 
-            int result = ConfigUtils.firstInit(getApplicationContext(), ConfigUtils.ASSETS_BADGET_PATH, cache.getPath());
+            int result = ConfigUtils.firstInit(getApplicationContext());
 
             if (result == 0) {
                 mainHandler.sendEmptyMessage(MSG_INIT_SUCCESS);

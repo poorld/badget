@@ -18,4 +18,24 @@
         <item>Script</item>
         <item>ScriptDirectory</item>
     </string-array>
+
+    <string-array name="theme_entries">
+        <item>开启</item>
+        <item>关闭</item>
+
+    </string-array>
+    <string-array name="theme_values">
+        <item>enabled</item>
+        <item>disabled</item>
+    </string-array>
+
+    <string-array name="language_entries">
+        <item>中文简体</item>
+        <item>English</item>
+
+    </string-array>
+    <string-array name="language_values">
+        <item>chinese</item>
+        <item>english</item>
+    </string-array>
 </resources>

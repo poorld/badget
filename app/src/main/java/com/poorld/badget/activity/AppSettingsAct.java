@@ -97,7 +97,7 @@ public class AppSettingsAct extends AppCompatActivity {
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             Log.d(TAG, "AppSettingsFragment#onCreate: ");
-            addPreferencesFromResource(R.xml.root_preferences);
+            addPreferencesFromResource(R.xml.app_settings_preferences);
 
             prefApp = findPreference(KEY_PREF_APP);
             prefEnable = findPreference(KEY_PREF_SWITCH_ENABLE);

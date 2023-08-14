@@ -1,0 +1,51 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="管理">
+
+        <SwitchPreference
+            android:key="pref_switch_enable"
+            android:summaryOff=""
+            android:summaryOn=""
+            android:title="全局开关" />
+
+        <SwitchPreference
+            android:key="pref_switch_enable"
+            android:summaryOff=""
+            android:summaryOn=""
+            android:title="注入提醒" />
+
+        <ListPreference
+            app:defaultValue="disabled"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="reply"
+            app:title="深色主题"
+            app:selectable="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="chinese"
+            app:entries="@array/language_entries"
+            app:entryValues="@array/language_values"
+            app:key="reply"
+            app:title="语言"
+            app:selectable="false"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="其他">
+        <Preference
+            app:key="pref_js_path"
+            app:title="检查更新"
+            app:summary="v1.0"/>
+
+        <Preference
+            app:key="pref_js_path"
+            app:title="关于"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

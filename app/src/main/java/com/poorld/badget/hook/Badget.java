@@ -77,14 +77,21 @@ public class Badget implements IXposedHookLoadPackage {
                 try {
                     Context base = (Context) param.args[0];
 
-                    // /data/user/0/packageName/app_libs/
-                    String applib = ConfigUtils.getAppPrivLibDir(base);
+                    /**
+                     * from
+                     *      /data/local/tmp/badget/arm64-v8a/
+                     * to
+                     *      /data/user/0/packageName/app_libs/
+                     */
+                    String applibDir = ConfigUtils.getAppPrivLibDir(base);
                     String ABI = android.os.Process.is64Bit() ? ConfigUtils.ABI_V8A : ConfigUtils.ABI_V7A;
-                    File appGadgetLibPath = ConfigUtils.getAppGadgetLibPath(base, pkgConfig.getSoName());
-                    Log.d(TAG, "appGadgetLibPath: " + appGadgetLibPath);
-                    if (!appGadgetLibPath.exists()) {
+                    // check /data/user/0/packageName/app_libs/librandom.so
+                    File appGadgetLib = ConfigUtils.getAppGadgetLibPath(base, pkgConfig.getSoName());
+                    Log.d(TAG, "appGadgetLib: " + appGadgetLib);
+                    if (!appGadgetLib.exists()) {
                         String gadgetLibName = ConfigUtils.getGadgetLibName(pkgConfig.getSoName());
-                        CommonUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applib, gadgetLibName);
+                        CommonUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applibDir, gadgetLibName);
+                        // save librandom.config.so
                         ConfigUtils.saveAppGadgetConfig(base, pkgConfig);
                     }
 

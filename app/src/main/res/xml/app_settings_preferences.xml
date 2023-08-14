@@ -17,7 +17,6 @@
 
 
         <SwitchPreference
-            android:icon="@drawable/baseline_bug_report_30"
             android:key="pref_switch_enable"
             android:summaryOff=""
             android:summaryOn=""
@@ -28,7 +27,6 @@
     <PreferenceCategory app:title="管理">
         <Preference
             app:key="pref_js_path"
-            app:icon="@drawable/baseline_token_26"
             app:title="hook脚本"
             app:summary="无"/>
 
