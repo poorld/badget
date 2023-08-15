@@ -118,7 +118,7 @@ public class ConfigUtils {
                 break;
             case Script:
                 // 测试通过
-                gadgetConfigJson = getJSConfigForScript(context.getPackageName());
+                gadgetConfigJson = getJSConfigForScript(pkgConfig.getJsPath());
                 break;
             case ScriptDirectory:
                 // 测试通过
@@ -172,12 +172,12 @@ public class ConfigUtils {
      *   }
      * }
      */
-    public static String getJSConfigForScript(String packageName) {
+    public static String getJSConfigForScript(String jsPath) {
         JSONObject wrap = new JSONObject();
         JSONObject interaction = new JSONObject();
         try {
             interaction.put("type", "script");
-            interaction.put("path", getBadgetJSPath(packageName).getPath());
+            interaction.put("path", jsPath);
             interaction.put("on_change", "reload");
             wrap.putOpt("interaction", interaction);
             Log.d(TAG, "getGadgetConfigJson: " + wrap);
