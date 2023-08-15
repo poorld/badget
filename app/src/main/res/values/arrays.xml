@@ -5,18 +5,18 @@
         <!--        <item>com.example.escprintdemov2</item>-->
     </string-array>
     <!-- Reply Preference -->
-    <string-array name="reply_entries">
+    <string-array name="types_entries">
         <item>Listen</item>
         <item>Connect</item>
         <item>Script</item>
         <item>ScriptDirectory</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>Listen</item>
-        <item>Connect</item>
-        <item>Script</item>
-        <item>ScriptDirectory</item>
+    <string-array name="types_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="theme_entries">

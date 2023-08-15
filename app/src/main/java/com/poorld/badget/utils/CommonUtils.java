@@ -172,7 +172,7 @@ public class CommonUtils {
         if (uri.getAuthority() != null) {
             try {
                 inputStream = context.getContentResolver().openInputStream(uri);
-                File file = createTemporalFileFrom(context, inputStream,fileSavePath, fileName);
+                File file = createTemporalFileFrom(inputStream, fileSavePath, fileName);
                 filePath = file.getPath();
 
             } catch (Exception e) {
@@ -192,7 +192,7 @@ public class CommonUtils {
         return filePath;
     }
 
-    private static File createTemporalFileFrom(Context context, InputStream inputStream, String path, String fileName)
+    private static File createTemporalFileFrom(InputStream inputStream, String fileSavePath, String fileName)
             throws IOException {
         File targetFile = null;
 
@@ -200,24 +200,25 @@ public class CommonUtils {
             int read;
             byte[] buffer = new byte[8 * 1024];
             //自己定义拷贝文件路径
-            targetFile = new File(path);
+            targetFile = new File(fileSavePath, fileName);
 
             if (!targetFile.getParentFile().exists()) {
                 // create dir: /data/local/tmp/badget/packageName/
+                // touch /data/local/tmp/badget/packageName/target.js
                 ShellUtils.execCommand(new String[]{
                         "mkdir " + targetFile.getParentFile().getPath(),
                         "touch " + targetFile.getPath(),
                         "chmod 777 " + targetFile.getPath()
                 }, true, false);
             } else {
-                // herself
-                //if (targetFile.exists()) {
-                //    //return targetFile;
-                //    targetFile.delete();
-                //}
+                // touch /data/local/tmp/badget/packageName/target.js
+                ShellUtils.execCommand(new String[]{
+                        "touch " + targetFile.getPath(),
+                        "chmod 777 " + targetFile.getPath()
+                }, true, false);
             }
 
-
+            // 写入内容到/data/local/tmp/badget/packageName/targetFile.js
             try (OutputStream outputStream = Files.newOutputStream(targetFile.toPath())){
                 while ((read = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, read);

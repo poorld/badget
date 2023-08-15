@@ -58,6 +58,11 @@ public class ConfigUtils {
         return new File(getBadgetDataPath(), FILE_NAME_BADGET_CONFIG).getPath();
     }
 
+    // /data/local/tmp/badget/packageName/
+    public static File getBadgetPackagePath(String packageName) {
+        return new File(getBadgetDataPath(), packageName);
+    }
+
     // /data/local/tmp/badget/packageName/hook.js
     public static File getBadgetJSPath(String packageName) {
         File badgetPackagePath = new File(getBadgetDataPath(), packageName);
@@ -101,22 +106,27 @@ public class ConfigUtils {
         String gadgetConfigJson = null;
         switch (pkgConfig.getType()) {
             case Listen:
-                // 待完善
-                //getJSConfigForListen();
+                // objection -g Gadget explore
+                // 后续更新可设置 ip:port
+                gadgetConfigJson = getJSConfigForListen("127.0.0.1", 27042, true);
                 break;
             case Connect:
-                // 待完善
-                //getJSConfigForConnect();
+                // 后续更新可设置 ip:port
+                gadgetConfigJson = getJSConfigForConnect("127.0.0.1", 27052);
                 break;
             case Script:
+                // 测试通过
                 gadgetConfigJson = getJSConfigForScript(context.getPackageName());
                 break;
             case ScriptDirectory:
-                // 待完善
-                //getJSConfigForScriptDirectory();
+                // 测试通过
+                gadgetConfigJson = getJSConfigForScriptDirectory(context.getPackageName());
                 break;
         }
         Log.d(TAG, "gadgetConfigJson: " + gadgetConfigJson);
+        if (gadgetConfigJson == null) {
+            return false;
+        }
         return CommonUtils.saveFile(gadgetConfigJson, getAppGadgetConfigPath(context, pkgConfig.getSoName()).getPath());
     }
 
@@ -380,6 +390,7 @@ public class ConfigUtils {
         if (pkgConfig == null) {
             pkgConfig = new ConfigEntity.PkgConfig();
             pkgConfig.setPkgName(packageName);
+            // 设置默认交互模式
             pkgConfig.setType(InteractionType.Script);
             mConfigCache.addPkgConfigs(packageName, pkgConfig);
         }

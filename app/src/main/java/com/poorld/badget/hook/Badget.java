@@ -91,9 +91,10 @@ public class Badget implements IXposedHookLoadPackage {
                     if (!appGadgetLib.exists()) {
                         String gadgetLibName = ConfigUtils.getGadgetLibName(pkgConfig.getSoName());
                         CommonUtils.copyFile(ConfigUtils.getBadgetDataPath() + ABI, applibDir, gadgetLibName);
-                        // save librandom.config.so
-                        ConfigUtils.saveAppGadgetConfig(base, pkgConfig);
                     }
+
+                    // save librandom.config.so
+                    ConfigUtils.saveAppGadgetConfig(base, pkgConfig);
 
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
@@ -143,6 +144,19 @@ public class Badget implements IXposedHookLoadPackage {
             }
         });
 
+
+
+    }
+
+    public void hookLog(String method) {
+        XposedHelpers.findAndHookMethod(Log.class, method, String.class, String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                XposedBridge.log("hookLog[" + param.args[0] + "] " + param.args[1]);
+            }
+
+        });
 
     }
 }

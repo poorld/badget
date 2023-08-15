@@ -25,19 +25,22 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="管理">
+        <ListPreference
+            app:entries="@array/types_entries"
+            app:entryValues="@array/types_values"
+            app:key="interaction_types"
+            app:title="交互模式" />
+
         <Preference
+            app:isPreferenceVisible="false"
             app:key="pref_js_path"
             app:title="hook脚本"
             app:summary="无"/>
 
-        <ListPreference
-            app:defaultValue="Script"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="交互模式"
-            app:selectable="false"
-            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:isPreferenceVisible="false"
+            app:key="pref_script_directory"
+            app:title="添加脚本" />
 
     </PreferenceCategory>
 
