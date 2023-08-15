@@ -14,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -404,6 +406,15 @@ public class ConfigUtils {
         return mConfigCache.getPkgConfigs();
     }
 
-
+    public static File[] getDirScripts(String packageName) {
+        File badgetPackagePath = getBadgetPackagePath(packageName);
+        File[] files = badgetPackagePath.listFiles(file -> file.getName().endsWith(".js"));
+        Log.d(TAG, "getDirScripts: " + files);
+        if (files != null && files.length > 0) {
+            Log.d(TAG, "getDirScripts: files.length " + files.length);
+            return files;
+        }
+        return null;
+    }
 
 }

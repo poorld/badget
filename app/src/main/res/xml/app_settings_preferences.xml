@@ -24,7 +24,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="管理">
+    <PreferenceCategory
+        app:key="manager_interaction_type"
+        app:title="管理">
         <ListPreference
             app:entries="@array/types_entries"
             app:entryValues="@array/types_values"

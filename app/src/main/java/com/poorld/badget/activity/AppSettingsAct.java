@@ -3,9 +3,11 @@ package com.poorld.badget.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.DialogPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreference;
 //import androidx.preference.SwitchPreferenceCompat;
 
@@ -14,6 +16,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,6 +30,10 @@ import com.poorld.badget.utils.ConfigUtils;
 import com.poorld.badget.utils.PkgManager;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class AppSettingsAct extends AppCompatActivity {
 
@@ -101,6 +108,7 @@ public class AppSettingsAct extends AppCompatActivity {
 
         private static final String KEY_PREF_APP = "pref_app";
         private static final String KEY_PREF_SWITCH_ENABLE = "pref_switch_enable";
+        private static final String KEY_MANAGER_INTERACTION_TYPE = "manager_interaction_type";
         private static final String KEY_PREF_JS_PATH = "pref_js_path";
         private static final String KEY_PREF_SCRIPT_DIRECTORY = "pref_script_directory";
 
@@ -112,7 +120,12 @@ public class AppSettingsAct extends AppCompatActivity {
 
         ListPreference prefType;
         SwitchPreference prefEnable;
+
+        PreferenceGroup managerGroup;
         private ConfigEntity.PkgConfig pkgConfig;
+
+        private Map<String, Preference> mDirScriptPreferences = new ArrayMap<>();
+
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,6 +138,7 @@ public class AppSettingsAct extends AppCompatActivity {
             prefJs = findPreference(KEY_PREF_JS_PATH);
             prefScriptDirectory = findPreference(KEY_PREF_SCRIPT_DIRECTORY);
             prefType = findPreference(KEY_INTERACTION_TYPES);
+            managerGroup = findPreference(KEY_MANAGER_INTERACTION_TYPE);
 
             Intent intent = getActivity().getIntent();
             if (intent != null) {
@@ -178,6 +192,8 @@ public class AppSettingsAct extends AppCompatActivity {
         }
 
         private void updateInteractionTypePreferences(InteractionType interactionType) {
+            clearDirScripts();
+
             int index = interactionType.getInteractionType();
             prefType.setValueIndex(index);
             String[] values = getResources().getStringArray(R.array.types_entries);
@@ -197,6 +213,40 @@ public class AppSettingsAct extends AppCompatActivity {
             } else if (interactionType == InteractionType.ScriptDirectory) {
                 prefScriptDirectory.setVisible(true);
                 prefJs.setVisible(false);
+                refreshDirScripts();
+            }
+        }
+
+        private void refreshDirScripts() {
+
+            Log.d(TAG, "refreshDirScripts: ");
+            if (mApp != null) {
+                File[] Scripts = ConfigUtils.getDirScripts(mApp.getPackageName());
+                if (Scripts == null) {
+                    return;
+                }
+
+                for (File script : Scripts) {
+                    String name = script.getName();
+
+                    Preference item = new Preference(getContext());
+                    item.setKey(name);
+                    //item.setTitle(name);
+                    item.setSummary(name);
+                    item.setIcon(R.drawable.baseline_javascript_24);
+                    mDirScriptPreferences.put(name, item);
+                    managerGroup.addPreference(item);
+
+                }
+            }
+        }
+
+        private void clearDirScripts() {
+            if (mDirScriptPreferences.size() > 0) {
+                for (Preference preference : mDirScriptPreferences.values()) {
+                    managerGroup.removePreference(preference);
+                }
+                mDirScriptPreferences.clear();
             }
         }
 
