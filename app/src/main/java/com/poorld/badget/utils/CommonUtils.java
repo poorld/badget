@@ -66,11 +66,11 @@ public class CommonUtils {
             Random random = new Random();
 
             if (number == 1) {
-                return String.valueOf(letter.charAt(random.nextInt(27)));
+                return String.valueOf(letter.charAt(random.nextInt(26)));
             }
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < number; i++) {
-                sb.append(letter.charAt(random.nextInt(27)));
+                sb.append(letter.charAt(random.nextInt(26)));
             }
             return sb.toString();
         }
