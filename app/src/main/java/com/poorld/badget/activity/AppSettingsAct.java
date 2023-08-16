@@ -2,8 +2,8 @@ package com.poorld.badget.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.DialogPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -12,6 +12,7 @@ import androidx.preference.SwitchPreference;
 //import androidx.preference.SwitchPreferenceCompat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -28,12 +29,10 @@ import com.poorld.badget.entity.ItemAppEntity;
 import com.poorld.badget.utils.CommonUtils;
 import com.poorld.badget.utils.ConfigUtils;
 import com.poorld.badget.utils.PkgManager;
+import com.poorld.badget.utils.ShellUtils;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class AppSettingsAct extends AppCompatActivity {
 
@@ -238,14 +237,18 @@ public class AppSettingsAct extends AppCompatActivity {
                 }
 
                 for (File script : Scripts) {
-                    String name = script.getName();
+                    String key = script.getName();
 
                     Preference item = new Preference(getContext());
-                    item.setKey(name);
+                    item.setKey(key);
                     //item.setTitle(name);
-                    item.setSummary(name);
+                    item.setSummary(key);
                     item.setIcon(R.drawable.baseline_javascript_24);
-                    mDirScriptPreferences.put(name, item);
+                    item.setOnPreferenceClickListener(preference -> {
+                        showDeleteDialog(key, script);
+                        return true;
+                    });
+                    mDirScriptPreferences.put(key, item);
                     managerGroup.addPreference(item);
 
                 }
@@ -260,6 +263,33 @@ public class AppSettingsAct extends AppCompatActivity {
                 mDirScriptPreferences.clear();
             }
         }
+
+        private void removeScriptByKey(String key) {
+            Preference preference = mDirScriptPreferences.get(key);
+            if (mDirScriptPreferences != null) {
+                mDirScriptPreferences.remove(preference);
+                managerGroup.removePreference(preference);
+            }
+        }
+
+
+        private void showDeleteDialog(String key, File file) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(String.format("是否删除脚本 %s ?", file.getName()))
+                    .setPositiveButton("确定", (dialogInterface, i) -> {
+                        //file.delete();
+                        ShellUtils.CommandResult result = ShellUtils.execCommand("rm " + file.getPath(), true, true);
+                        Log.d(TAG, "result.result: " + result.result);
+                        if (result.result == 0) {
+                            removeScriptByKey(key);
+                        }
+
+                    })
+                    .setNegativeButton("取消", (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    }).show();
+        }
+
 
 
         @Override

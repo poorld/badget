@@ -30,7 +30,7 @@ gadget版本: 16.0.17
 │   │   └── libfrida_gadget.so
 │   ├── arm64-v7a
 │   │   └── libfrida_gadget.so
-│   ├── com.network.xf100
+│   ├── com.aaa.bbb
 │   │   └── hook.js
 │   │
 │   └── badget.json
@@ -42,9 +42,9 @@ gadget版本: 16.0.17
 {
     "enabled":true,
     "pkgConfigs":{
-        "com.network.xf100":{
+        "com.aaa.bbb":{
             "enabled":true,
-            "jsPath":"/data/local/tmp/badget/com.xxx.xxx/hook.js",
+            "jsPath":"/data/local/tmp/badget/com.aaa.bbb/hook.js",
             "pkgName":"com.xxx.xxx",
             "appName":"xxx",
             "soName":"libgienx",
@@ -52,9 +52,9 @@ gadget版本: 16.0.17
         },
         "com.android.chrome":{
             "enabled":false,
-            "jsPath":"/data/local/tmp/badget/com.aaaa.bbb/hook.js",
-            "pkgName":"com.aaa.bbb",
-            "appName":"xxx",
+            "jsPath":"/data/local/tmp/badget/com.android.chrome/hook.js",
+            "pkgName":"com.android.chrome",
+            "appName":"Chrome",
             "soName":"libxhqpr",
             "type":"script"
         }
@@ -68,15 +68,16 @@ gadget版本: 16.0.17
 - ~~使用Material Design主题~~
 - ~~gadget库随机命名~~
 - ~~关于界面~~
+- ~~可选交互类型~~
+  1. Listen
+  2. Connect
+  3. Script
+  4. ScriptDirectory
 - frida-gadget版本动态下载(无需内置到assets目录)
 - 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
 - 脚本仓库(脚本市场)
 - frida-gadget库去特征
-- 可选交互类型
-  1. Listen
-  2. Connect
-  3. ~~Script~~
-  4. ScriptDirectory
+
 
 ### 参考&致谢
 - [svengong/xcubebase](https://github.com/svengong/xcubebase)
