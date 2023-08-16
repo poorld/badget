@@ -80,10 +80,18 @@ public class AppSettingsAct extends AppCompatActivity {
                 return;
             }
             pkgConfig.setJsPath(file.getPath());
-            pkgConfig.setSoName(ConfigUtils.getRandomName());
+
             ConfigUtils.updatePkgConfig();
 
-            runOnUiThread(() -> Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show());
+
+
+            runOnUiThread(() -> {
+                Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
+                AppSettingsFragment fragment = (AppSettingsFragment) getSupportFragmentManager().findFragmentById(R.id.settings_container);
+                if (fragment != null) {
+                    fragment.refreshPreferences();
+                }
+            });
         } else {
             runOnUiThread(() -> Toast.makeText(this, "添加失败", Toast.LENGTH_SHORT).show());
         }
@@ -159,6 +167,7 @@ public class AppSettingsAct extends AppCompatActivity {
                     Drawable drawable = CommonUtils.resizeDrawable(getContext(), mApp.getDrawable(), 30, 30);
                     prefApp.setIcon(drawable);
 
+                    refreshPreferences();
                 }
             }
         }
@@ -166,28 +175,23 @@ public class AppSettingsAct extends AppCompatActivity {
         @Override
         public void onResume() {
             super.onResume();
-            if (mApp != null) {
-                ConfigEntity.PkgConfig pkgConfig = ConfigUtils.getPkgConfig(mApp.getPackageName());
-                if (pkgConfig != null) {
-                    String jsPath = pkgConfig.getJsPath();
-                    if (!TextUtils.isEmpty(jsPath)) {
-                        prefJs.setSummary(jsPath);
-                    } else {
-                        prefJs.setSummary("无");
-                    }
 
-                    InteractionType type = pkgConfig.getType();
-                    if (type != null) {
-                        updateInteractionTypePreferences(type);
-                    }
-
-                }
-
-            }
         }
 
         @Override
         public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+
+        }
+
+        public void refreshPreferences() {
+            if (pkgConfig != null) {
+                InteractionType type = pkgConfig.getType();
+                //InteractionType type = pkgConfig.getType();
+                if (type != null) {
+                    updateInteractionTypePreferences(type);
+                }
+
+            }
 
         }
 
@@ -209,6 +213,13 @@ public class AppSettingsAct extends AppCompatActivity {
                 prefScriptDirectory.setVisible(false);
             } else if (interactionType == InteractionType.Script) {
                 prefJs.setVisible(true);
+                String jsPath = pkgConfig.getJsPath();
+                if (!TextUtils.isEmpty(jsPath)) {
+                    prefJs.setSummary(jsPath);
+                } else {
+                    prefJs.setSummary("无");
+                }
+
                 prefScriptDirectory.setVisible(false);
             } else if (interactionType == InteractionType.ScriptDirectory) {
                 prefScriptDirectory.setVisible(true);

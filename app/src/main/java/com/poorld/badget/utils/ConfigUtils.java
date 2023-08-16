@@ -394,6 +394,7 @@ public class ConfigUtils {
             pkgConfig.setPkgName(packageName);
             // 设置默认交互模式
             pkgConfig.setType(InteractionType.Script);
+            pkgConfig.setSoName(ConfigUtils.getRandomName());
             mConfigCache.addPkgConfigs(packageName, pkgConfig);
         }
         return pkgConfig;
