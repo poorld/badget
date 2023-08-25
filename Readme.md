@@ -1,7 +1,6 @@
 ### 说明
-本项目为frida gadget动态注入工具
 
-badget基于xposed和frida-gadget，实现frida-gadget动态注入。
+Badget是frida的持久化工具，通过注入frida-gadget，让目标app加载该so文件，进而实现frida的hook功能。
 
 gadget版本: 16.0.17
 
@@ -9,6 +8,8 @@ gadget版本: 16.0.17
 
 参考博客地址: [Frida持久化方案(Xcube)之方案二——基于xposed](https://bbs.kanxue.com/thread-266784.htm)
 
+![界面1](show_1.jpg)
+![界面2](show_2.jpg)
 
 ```
 免责声明：
@@ -37,46 +38,45 @@ gadget版本: 16.0.17
 └
 ```
 
-### 配置文件
+### 配置文件(自动生成)
 ```json
 {
     "enabled":true,
     "pkgConfigs":{
-        "com.aaa.bbb":{
+        "com.network.xf100":{
+            "appName":"xx加速器",
             "enabled":true,
-            "jsPath":"/data/local/tmp/badget/com.aaa.bbb/hook.js",
+            "jsPath":"/data/local/tmp/badget/com.xxx.xxx/xx.js",
             "pkgName":"com.xxx.xxx",
-            "appName":"xxx",
-            "soName":"libgienx",
-            "type":"script"
+            "soName":"zgskl",
+            "type":"Script"
         },
         "com.android.chrome":{
             "enabled":false,
-            "jsPath":"/data/local/tmp/badget/com.android.chrome/hook.js",
             "pkgName":"com.android.chrome",
-            "appName":"Chrome",
-            "soName":"libxhqpr",
-            "type":"script"
+            "soName":"xykod",
+            "type":"Script"
         }
     }
 }
 ```
-
-
-### 未实现
-- ~~实现界面化配置~~
-- ~~使用Material Design主题~~
-- ~~gadget库随机命名~~
-- ~~关于界面~~
-- ~~可选交互类型~~
+### 已实现
+- 实现界面化配置
+- 使用Material Design主题
+- gadget库随机命名
+- 可选交互类型
   1. Listen
   2. Connect
   3. Script
   4. ScriptDirectory
+
+### 未实现
 - frida-gadget版本动态下载(无需内置到assets目录)
 - 监听脚本内容变化，并更新到/data/local/tmp/badget/packageName/hook.js
 - 脚本仓库(脚本市场)
 - frida-gadget库去特征
+- 日志悬浮窗
+- 设置界面
 
 
 ### 参考&致谢
@@ -84,34 +84,6 @@ gadget版本: 16.0.17
 - [Dr-TSNG/Hide-My-Applist](https://github.com/Dr-TSNG/Hide-My-Applist)
 - [SeeFlowerX](https://github.com/SeeFlowerX)
 
-### 日志
-```log
-saveConfig {"enabled":true,"pkgConfigs":{"com.xxx.xxx":{"appName":"xxx","enabled":true,"pkgName":"com.xxx.xxx","type":"Script"}}}
-saveConfig to /data/local/tmp/badget/badget.json
-saveFileFromUri: 
-uri: content://com.android.externalstorage.documents/document/primary%3ADownload%2FWeiXin%2Fxf.js
-fileSavePath: /data/local/tmp/badget/com.xxx.xxx/hook.js
-saveConfig {"enabled":true,"pkgConfigs":{"com.xxx.xxx":{"appName":"xxx","enabled":true,"jsPath":"/data/local/tmp/badget/com.xxx.xxx/hook.js","pkgName":"com.xxx.xxx","soName":"libnwwyg","type":"Script"}}}
-saveConfig to /data/local/tmp/badget/badget.json
-
-handleLoadPackage: com.xxx.xxx
-initConfig: 
-mConfigCache: null
-readFile: 
-mConfigCache: ConfigEntity{enabled=true, pkgConfigs={com.xxx.xxx=PkgConfig{pkgName='com.xxx.xf100', appName='xxx', jsPath='/data/local/tmp/badget/com.xxx.xxx/hook.js', soName='csclr', type=Script, enabled=true}}}
-mConfig: ConfigEntity{enabled=true, pkgConfigs={com.xxx.xxx=PkgConfig{pkgName='com.xxx.xxx', appName='xxx', jsPath='/data/local/tmp/badget/com.xxx.xxx/hook.js', soName='csclr', type=Script, enabled=true}}}
-beforeHookedMethod: 
-appGadgetLibPath: /data/user/0/com.xxx.xxx/app_libs/libcsclr.so
-copyFile: 
-fromDir: /data/local/tmp/badget/armeabi-v7a
-toDir: /data/user/0/com.xxx.xxx/app_libs
-复制文件到/data/user/0/com.xxx.xxx/app_libs/libcsclr.so
-saveAppGadgetConfig: pkgConfig=PkgConfig{pkgName='com.xxx.xxx', appName='xxx', jsPath='/data/local/tmp/badget/com.xxx.xxx/hook.js', soName='csclr', type=Script, enabled=true}
-getGadgetConfigJson: {"interaction":{"type":"script","path":"\/data\/local\/tmp\/badget\/com.xxx.xxx\/hook.js","on_change":"reload"}}
-gadgetConfigJson: {"interaction":{"type":"script","path":"/data/local/tmp/badget/com.xxx.xxx/hook.js","on_change":"reload"}}
-saveConfig {"interaction":{"type":"script","path":"/data/local/tmp/badget/com.xxx.xxx/hook.js","on_change":"reload"}}
-saveConfig to /data/user/0/com.xxx.xxx/app_libs/libcsclr.config.so
-afterHookedMethod: 
-ClassLoader: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.xxx.xxx-RSJRK8IuxruuvxywghYu5A==/base.apk"],nativeLibraryDirectories=[/data/user/0/com.xxx.xxx/app_libs, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.xxx.xxx-RSJRK8IuxruuvxywghYu5A==/lib/arm, /data/app/~~fXKGHaxFLAxd_-AGBS7TdQ==/com.xxx.xxx-RSJRK8IuxruuvxywghYu5A==/base.apk!/lib/armeabi-v7a, /system/lib, /system_ext/lib, /system/lib, /system_ext/lib]]]
-System.load: /data/user/0/com.xxx.xxx/app_libs/libcsclr.so
-```
+### V1.2
+1.添加签名
+2.优化代码

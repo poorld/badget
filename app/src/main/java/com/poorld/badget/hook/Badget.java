@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.poorld.badget.MainActivity;
 import com.poorld.badget.entity.ConfigEntity;
+import com.poorld.badget.entity.InteractionType;
 import com.poorld.badget.utils.CommonUtils;
 import com.poorld.badget.utils.ConfigUtils;
 import com.poorld.badget.utils.LoadLibraryUtil;
@@ -36,9 +37,17 @@ public class Badget implements IXposedHookLoadPackage {
         Log.d(TAG, "handleLoadPackage: " + loadPackageParam.packageName);
 
         if (DBAGET_PKG_NAME.equals(loadPackageParam.packageName)) {
+            Log.d(TAG, "replaceHookedMethod: isModuleActive");
 
-            Class<?> appClazz = loadPackageParam.classLoader.loadClass("com.poorld.badget.app.MyApp");
-            XposedHelpers.setStaticBooleanField(appClazz, "isModuleActive", true);
+            //Class<?> appClazz = loadPackageParam.classLoader.loadClass("com.poorld.badget.app.MyApp");
+            //XposedHelpers.setStaticBooleanField(appClazz, "isModuleActive", true);
+
+            XposedHelpers.findAndHookMethod("com.poorld.badget.MainActivity", loadPackageParam.classLoader, "isModuleActive", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    return true;
+                }
+            });
 
             return;
         }
@@ -119,11 +128,20 @@ public class Badget implements IXposedHookLoadPackage {
                     return;
                 }
 
-                //File hookJsFile = ConfigUtils.getBadgetJSPath(context.getPackageName());
-                File hookJsFile = new File(pkgConfig.getJsPath());
-                if (!hookJsFile.exists()) {
-                    return;
+                if (pkgConfig.getType() == InteractionType.Script) {
+                    //File hookJsFile = ConfigUtils.getBadgetJSPath(context.getPackageName());
+                    File hookJsFile = new File(pkgConfig.getJsPath());
+                    if (!hookJsFile.exists()) {
+                        return;
+                    }
+                } else if (pkgConfig.getType() == InteractionType.ScriptDirectory) {
+                    File[] scripts = ConfigUtils.getDirScripts(pkgConfig.getPkgName());
+                    if (scripts == null) {
+                        return;
+                    }
                 }
+
+
 
                 // ClassLoader 加入库路径:/data/user/0/packageName/app_libs
                 LoadLibraryUtil.loadSoFile(loadPackageParam.classLoader, ConfigUtils.getAppPrivLibDir(context));

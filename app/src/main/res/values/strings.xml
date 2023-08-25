@@ -34,7 +34,7 @@
     <string name="about_help"><![CDATA[
         <font color="#6750A4">&ensp;&ensp;<b>frida</b></font>是一款基于Python + JavaScript的Hook与调试框架，是一个动态注入框架<br /><br />
         <font color="#6750A4">&ensp;&ensp;<b>frida-gadget</b></font>是一个动态共享库，可以在App中加载该动态库然后执行js代码功能<br /><br />
-        <font color="#6750A4">&ensp;&ensp;<b>Badget</b></font>是frida-gadget的持久化，通俗理解也就是注入frida-gadget，让目标app加载该so文件，进而实现frida的hook功能]]>
+        <font color="#6750A4">&ensp;&ensp;<b>Badget</b></font>是frida的持久化工具，通过注入frida-gadget，让目标app加载该so文件，进而实现frida的hook功能]]>
     </string>
 
 </resources>

@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (MyApp.isModuleActive) {
+        if (isModuleActive()) {
             statusCard.setCardBackgroundColor(getColor(R.color.md_theme_light_primary));
             statusCard.setOutlineAmbientShadowColor(getColor(R.color.md_theme_light_primary));
             statusCard.setOutlineSpotShadowColor(getColor(R.color.md_theme_light_primary));
@@ -126,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkInited();
+    }
+
+    private boolean isModuleActive() {
+        return false;
     }
 
     private void initBadget() {
