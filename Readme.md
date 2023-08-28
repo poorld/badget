@@ -61,7 +61,8 @@ Badget是frida的持久化工具，通过注入frida-gadget，让目标app加载
 2.优化代码
 
 
-## 参考&致谢- [svengong/xcubebase](https://github.com/svengong/xcubebase)
+## 参考&致谢
+- [svengong/xcubebase](https://github.com/svengong/xcubebase)
 - [Dr-TSNG/Hide-My-Applist](https://github.com/Dr-TSNG/Hide-My-Applist)
 - [SeeFlowerX](https://github.com/SeeFlowerX)
 
