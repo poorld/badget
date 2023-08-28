@@ -10,7 +10,7 @@ gadget版本: 16.0.17
 
 <div>
 <img src="https://github.com/poorld/badget/blob/main/show_1.jpg" width="300">&nbsp;&nbsp;
-<img src="https://github.com/poorld/badget/blob/main/show_1.jpg" width="300">
+<img src="https://github.com/poorld/badget/blob/main/show_2.jpg" width="300">
 </div>
 
 
