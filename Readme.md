@@ -8,8 +8,11 @@ gadget版本: 16.0.17
 
 参考博客地址: [Frida持久化方案(Xcube)之方案二——基于xposed](https://bbs.kanxue.com/thread-266784.htm)
 
-![界面1](show_1.jpg)
-![界面2](show_2.jpg)
+<div>
+<img src="https://github.com/poorld/badget/blob/main/show_1.jpg" width="300">&nbsp;&nbsp;
+<img src="https://github.com/poorld/badget/blob/main/show_1.jpg" width="300">
+</div>
+
 
 ```
 免责声明：
